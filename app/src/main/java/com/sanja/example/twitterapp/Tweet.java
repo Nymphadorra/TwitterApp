@@ -2,7 +2,7 @@ package com.sanja.example.twitterapp;
 
 import com.google.gson.annotations.SerializedName;
 
-class Tweet {
+public class Tweet {
 
     @SerializedName("created_at") private String date;
     @SerializedName("text") private String text;

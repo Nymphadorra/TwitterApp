@@ -1,6 +1,6 @@
 package com.sanja.example.twitterapp;
 
-interface BasePresenter<V> {
+public interface BasePresenter<V> {
 
     V view();
 

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-class SearchResponse {
+public class SearchResponse {
 
     @SerializedName("statuses") private List<Tweet> tweets;
 
