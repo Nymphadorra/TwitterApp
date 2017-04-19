@@ -17,5 +17,6 @@ public class HomeMvp {
 
     public interface Presenter extends BasePresenter<View> {
 
+        void onSearchClicked();
     }
 }

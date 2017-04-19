@@ -25,6 +25,11 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
         search();
     }
 
+    @Override
+    public void onSearchClicked() {
+
+    }
+
     private void search() {
         apiService.searchTweets("spacex").enqueue(new Callback<SearchResponse>() {
             @Override

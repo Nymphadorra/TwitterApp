@@ -8,6 +8,8 @@
     android:orientation="vertical"
     tools:context="com.sanja.example.twitterapp.MainActivity">
 
+    <include layout="@layout/toolbar"/>
+
     <TextView
         android:id="@+id/tv_main"
         android:layout_width="wrap_content"
