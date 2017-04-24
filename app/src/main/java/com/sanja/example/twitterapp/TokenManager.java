@@ -6,11 +6,14 @@ import retrofit2.Response;
 
 public class TokenManager {
 
-    private final APIServiceAuth apiServiceAuth;
-    private Preferences preferences = Preferences.getInstance(); // TODO: DI through constructor?
+    private static final String CLIENT_CREDENTIALS = "client_credentials";
 
-    public TokenManager(APIServiceAuth apiServiceAuth) {
+    private final APIServiceAuth apiServiceAuth;
+    private final Preferences preferences;
+
+    public TokenManager(APIServiceAuth apiServiceAuth, Preferences preferences) {
         this.apiServiceAuth = apiServiceAuth;
+        this.preferences = preferences;
         this.token = preferences.getToken();
     }
 
@@ -22,7 +25,7 @@ public class TokenManager {
 
     public boolean refreshToken() {
         try {
-            Response<Token> response = apiServiceAuth.createToken("client_credentials").execute();
+            Response<Token> response = apiServiceAuth.createToken(CLIENT_CREDENTIALS).execute();
             String accessToken = response.body().getAccessToken();
             this.token = accessToken;
             preferences.saveToken(accessToken);

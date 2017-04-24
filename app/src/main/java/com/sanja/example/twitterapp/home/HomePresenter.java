@@ -14,6 +14,7 @@ import retrofit2.Response;
 
 public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements HomeMvp.Presenter {
 
+    private static final String DEFAULT_SEARCH_QUERY = "Elon Musk";
     private final APIService apiService;
 
     public HomePresenter(APIService apiService) {
@@ -22,16 +23,11 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     @Override
     protected void onBind() {
-        search();
+        search(DEFAULT_SEARCH_QUERY);
     }
 
-    @Override
-    public void onSearchClicked() {
-
-    }
-
-    private void search() {
-        apiService.searchTweets("spacex").enqueue(new Callback<SearchResponse>() {
+    private void search(String searchInput) {
+        apiService.searchTweets(searchInput).enqueue(new Callback<SearchResponse>() {
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 if(response.isSuccessful()) {
@@ -51,4 +47,5 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
     private void handleSearchSuccess(List<Tweet> tweets) {
         view().showTweets(tweets);
     }
+
 }

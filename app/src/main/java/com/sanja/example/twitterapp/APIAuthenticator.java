@@ -9,6 +9,9 @@ import okhttp3.Route;
 
 public class APIAuthenticator implements Authenticator {
 
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
+
     private final TokenManager tokenManager;
 
     public APIAuthenticator(TokenManager tokenManager) {
@@ -21,7 +24,7 @@ public class APIAuthenticator implements Authenticator {
 
         if(refreshTokenSuccess) {
             return response.request().newBuilder()
-                    .header("Authorization", "Bearer " + tokenManager.getToken())
+                    .header(AUTHORIZATION, BEARER + tokenManager.getToken())
                     .build();
         } else {
             return null;

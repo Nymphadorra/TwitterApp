@@ -1,13 +1,17 @@
 package com.sanja.example.twitterapp.di.modules;
 
+import android.content.Context;
+
 import com.sanja.example.twitterapp.APIAuthenticator;
 import com.sanja.example.twitterapp.APIConstants;
 import com.sanja.example.twitterapp.APIService;
 import com.sanja.example.twitterapp.APIServiceAuth;
 import com.sanja.example.twitterapp.AuthHeaderInterceptor;
+import com.sanja.example.twitterapp.Preferences;
 import com.sanja.example.twitterapp.TokenManager;
 import com.sanja.example.twitterapp.di.AppScope;
 import com.sanja.example.twitterapp.di.qualifiers.Auth;
+import com.squareup.picasso.Picasso;
 
 import dagger.Module;
 import dagger.Provides;
@@ -103,12 +107,18 @@ public class APIModule {
 
     @AppScope
     @Provides
-    public TokenManager provideTokenManager(APIServiceAuth apiServiceAuth) {
-        return new TokenManager(apiServiceAuth);
+    public TokenManager provideTokenManager(APIServiceAuth apiServiceAuth, Preferences preferences) {
+        return new TokenManager(apiServiceAuth, preferences);
     }
 
     @Provides
     public APIAuthenticator provideApiAuthenticator(TokenManager tokenManager) {
         return new APIAuthenticator(tokenManager);
+    }
+
+    @AppScope
+    @Provides
+    public Picasso providePicasso(Context context) {
+        return Picasso.with(context);
     }
 }

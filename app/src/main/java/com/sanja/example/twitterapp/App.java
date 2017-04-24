@@ -17,6 +17,5 @@ public class App extends Application {
             Timber.plant(new Timber.DebugTree());
         }
         AppComponentContainer.init(this);
-        Preferences.getInstance().initialize(this);
     }
 }

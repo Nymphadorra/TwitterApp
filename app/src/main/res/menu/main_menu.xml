@@ -3,9 +3,27 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_search"
-        android:icon="@drawable/ic_search_black"
-        android:title="search"
+        android:id="@+id/menu_item_auto_scroll"
+        android:icon="@drawable/ic_auto_scroll_black"
+        android:title="@string/menu_item_title_auto_scroll"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_item_list_layout"
+        android:icon="@drawable/ic_view_list_black"
+        android:title="@string/menu_item_title_list_layout"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_item_pager_layout"
+        android:icon="@drawable/ic_view_pager_black"
+        android:title="@string/menu_item_title_pager_layout"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_item_settings"
+        android:icon="@drawable/ic_settings_black"
+        android:title="@string/menu_item_title_settings"
         app:showAsAction="always"/>
 
 </menu>

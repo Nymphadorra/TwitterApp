@@ -1,28 +1,15 @@
 package com.sanja.example.twitterapp;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 public class Preferences {
 
     private static final String PREF_KEY_TOKEN = "pref_key_token";
 
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
 
-    public volatile static Preferences uniqueInstance;
-
-    private Preferences(){}
-
-    public static Preferences getInstance() {
-        if(uniqueInstance == null) {
-            uniqueInstance = new Preferences();
-        }
-        return uniqueInstance;
-    }
-
-    public void initialize(Context context) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public Preferences(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
     }
 
     public void saveToken(String token) {

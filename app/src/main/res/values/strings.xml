@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">TwitterApp</string>
 
-    <string name="toolbar_et_search_hint">Search Tweets</string>
+    <!-- Menu items titles -->
+    <string name="menu_item_title_auto_scroll">Auto scroll</string>
+    <string name="menu_item_title_list_layout">List layout</string>
+    <string name="menu_item_title_pager_layout">Pager layout</string>
+    <string name="menu_item_title_settings">Settings</string>
+
+    <!-- Buttons -->
+    <string name="btn_auto_scroll">Auto scroll</string>
+    <string name="btn_layout">Layout</string>
+    <string name="btn_settings">Settings</string>
+
+    <!-- Error messages -->
+    <string name="error_tweet_date">Unknown date</string>
+
 </resources>

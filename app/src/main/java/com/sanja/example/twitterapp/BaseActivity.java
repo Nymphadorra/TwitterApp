@@ -14,8 +14,8 @@ public class BaseActivity extends AppCompatActivity{
     protected void setupToolbar(@NonNull Toolbar toolbar) {
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        // actionBar.setDisplayShowTitleEnabled(false);
+        // actionBar.setDisplayHomeAsUpEnabled(false);
     }
 
     protected void showToast(String toastMessage) {

@@ -9,6 +9,7 @@ import okhttp3.Response;
 public class AuthHeaderInterceptor implements Interceptor {
 
     private static final String AUTH_HEADER_KEY = "Authorization";
+    private static final String BEARER = "Bearer ";
 
     private final TokenManager tokenManager;
 
@@ -21,7 +22,7 @@ public class AuthHeaderInterceptor implements Interceptor {
         Request originalRequest = chain.request();
 
         Request request = originalRequest.newBuilder()
-                .header(AUTH_HEADER_KEY, "Bearer " + tokenManager.getToken())
+                .header(AUTH_HEADER_KEY, BEARER + tokenManager.getToken())
                 .build();
         return chain.proceed(request);
     }

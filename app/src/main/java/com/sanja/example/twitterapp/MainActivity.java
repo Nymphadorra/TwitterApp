@@ -6,12 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.ImageView;
 
+import com.paginate.Paginate;
 import com.sanja.example.twitterapp.di.components.AppComponentContainer;
 import com.sanja.example.twitterapp.home.DaggerHomeComponent;
 import com.sanja.example.twitterapp.home.HomeComponent;
 import com.sanja.example.twitterapp.home.HomeMvp;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -19,18 +22,19 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import timber.log.Timber;
 
-public class MainActivity extends BaseActivity implements HomeMvp.View{
+public class MainActivity extends BaseActivity implements
+        HomeMvp.View {
 
     @Inject HomeMvp.Presenter presenter;
+    @Inject Picasso picasso;
 
-    @BindView(R.id.tv_main) TextView tvMain;
-    @BindView(R.id.rv_tweets) RecyclerView rvTweets;
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.rv_tweets) RecyclerView rvTweets;
+    @BindView(R.id.iv_auto_scroll) ImageView ivAutoScroll;
+    @BindView(R.id.iv_list_layout) ImageView ivListLayout;
+    @BindView(R.id.iv_pager_layout) ImageView ivPagerLayout;
+    @BindView(R.id.iv_settings) ImageView ivSettings;
 
     private TweetsAdapter tweetsAdapter;
 
@@ -44,8 +48,14 @@ public class MainActivity extends BaseActivity implements HomeMvp.View{
         presenter.bind(this);
 
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
-        tweetsAdapter = new TweetsAdapter();
+        tweetsAdapter = new TweetsAdapter(this, tweetListener, picasso);
         rvTweets.setAdapter(tweetsAdapter);
+    }
+
+    @Override
+    public void showTweets(List<Tweet> tweets) {
+        tweetsAdapter.refreshTweets(tweets);
+        setupTweetsPagination();
     }
 
     @Override
@@ -57,16 +67,21 @@ public class MainActivity extends BaseActivity implements HomeMvp.View{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case(R.id.menu_item_search):
-                presenter.onSearchClicked();
+            case (R.id.menu_item_auto_scroll):
+                // presenter.onAutoScrollClicked();
                 return true;
+            case(R.id.menu_item_list_layout):
+                // presenter.onListLayoutClicked();
+                return true;
+            case(R.id.menu_item_pager_layout):
+                // presenter.onPagerLayoutClicked();
+                return true;
+            case(R.id.menu_item_settings):
+                // presenter.onSettingsClicked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return true;
-    }
-
-    @Override
-    public void showTweets(List<Tweet> tweets) {
-        tweetsAdapter.refreshTweets(tweets);
     }
 
     private void injectDependencies() {
@@ -75,4 +90,36 @@ public class MainActivity extends BaseActivity implements HomeMvp.View{
                 .build();
         homeComponent.inject(this);
     }
+
+    private TweetsAdapter.ItemClickListener tweetListener = new TweetsAdapter.ItemClickListener() {
+        @Override
+        public void onTweetItemClicked(int tweetPosition) {
+        }
+    };
+
+    private void setupTweetsPagination() {
+        Paginate.with(rvTweets, callbacks)
+                .setLoadingTriggerThreshold(2)
+                .addLoadingListItem(true)
+                .build();
+    }
+
+    Paginate.Callbacks callbacks = new Paginate.Callbacks() {
+        @Override
+        public void onLoadMore() {
+
+        }
+
+        @Override
+        public boolean isLoading() {
+            // Indicate whether new page loading is in progress or not
+            return false;
+        }
+
+        @Override
+        public boolean hasLoadedAllItems() {
+            // Indicate whether all data (pages) are loaded or not
+            return true;
+        }
+    };
 }

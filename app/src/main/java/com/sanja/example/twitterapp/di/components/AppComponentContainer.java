@@ -2,7 +2,7 @@ package com.sanja.example.twitterapp.di.components;
 
 import android.app.Application;
 
-import com.sanja.example.twitterapp.di.components.DaggerAppComponent;
+import com.sanja.example.twitterapp.di.modules.MainModule;
 
 public class AppComponentContainer {
 
@@ -16,6 +16,8 @@ public class AppComponentContainer {
     }
 
     public static void init(Application app) {
-        appComponent = DaggerAppComponent.create();
+        appComponent = DaggerAppComponent.builder()
+                .mainModule(new MainModule(app)) // Modules with parameters must be explicitly created
+                .build();
     }
 }
