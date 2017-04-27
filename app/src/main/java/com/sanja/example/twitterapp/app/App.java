@@ -1,7 +1,8 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.app;
 
 import android.app.Application;
 
+import com.sanja.example.twitterapp.BuildConfig;
 import com.sanja.example.twitterapp.di.components.AppComponentContainer;
 
 import timber.log.Timber;

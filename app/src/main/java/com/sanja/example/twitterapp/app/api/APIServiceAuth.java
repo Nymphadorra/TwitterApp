@@ -1,4 +1,6 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.app.api;
+
+import com.sanja.example.twitterapp.Token;
 
 import retrofit2.Call;
 import retrofit2.http.Headers;

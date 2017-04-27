@@ -2,11 +2,11 @@ package com.sanja.example.twitterapp.di.modules;
 
 import android.content.Context;
 
-import com.sanja.example.twitterapp.APIAuthenticator;
-import com.sanja.example.twitterapp.APIConstants;
-import com.sanja.example.twitterapp.APIService;
-import com.sanja.example.twitterapp.APIServiceAuth;
-import com.sanja.example.twitterapp.AuthHeaderInterceptor;
+import com.sanja.example.twitterapp.app.api.APIAuthenticator;
+import com.sanja.example.twitterapp.app.api.APIConstants;
+import com.sanja.example.twitterapp.app.api.APIService;
+import com.sanja.example.twitterapp.app.api.APIServiceAuth;
+import com.sanja.example.twitterapp.app.api.AuthHeaderInterceptor;
 import com.sanja.example.twitterapp.Preferences;
 import com.sanja.example.twitterapp.TokenManager;
 import com.sanja.example.twitterapp.di.AppScope;

@@ -1,5 +1,7 @@
 package com.sanja.example.twitterapp;
 
+import com.sanja.example.twitterapp.app.api.APIServiceAuth;
+
 import java.io.IOException;
 
 import retrofit2.Response;

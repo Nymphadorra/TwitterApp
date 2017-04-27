@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.app;
 
 public interface BasePresenter<V> {
 

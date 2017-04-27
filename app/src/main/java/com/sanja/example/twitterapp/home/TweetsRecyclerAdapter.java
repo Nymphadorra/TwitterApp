@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.home;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,30 +8,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sanja.example.twitterapp.ItemClickListener;
+import com.sanja.example.twitterapp.R;
+import com.sanja.example.twitterapp.Tweet;
+import com.sanja.example.twitterapp.app.Utils;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsAdapterViewHolder> {
-
-    interface ItemClickListener {
-        void onTweetItemClicked(int tweetPosition);
-    }
+public class TweetsRecyclerAdapter extends RecyclerView.Adapter<TweetsRecyclerAdapter.TweetsAdapterViewHolder>{
 
     private final String errorTweetDate;
     private final List<Tweet> tweets;
     private final ItemClickListener listener;
     private final Picasso picasso;
 
-    public TweetsAdapter(Context context, ItemClickListener listener, Picasso picasso) {
+    public TweetsRecyclerAdapter(Context context, ItemClickListener listener, Picasso picasso) {
         this.errorTweetDate = context.getString(R.string.error_tweet_date);
         this.tweets = new ArrayList<>();
         this.listener = listener;
@@ -76,6 +73,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsAdap
     private void setUserPhoto(String photoUrl, ImageView image) {
         picasso.load(photoUrl)
                 .placeholder(R.drawable.ic_person_black)
+                .resize(80, 80)
                 .into(image);
     }
 
@@ -96,7 +94,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.TweetsAdap
 
         @OnClick
         public void onRootClicked() {
-            listener.onTweetItemClicked(getAdapterPosition());
+            listener.onItemClicked(getAdapterPosition());
         }
     }
 }

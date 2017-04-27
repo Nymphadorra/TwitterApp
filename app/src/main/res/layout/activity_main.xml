@@ -6,13 +6,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.sanja.example.twitterapp.MainActivity">
+    tools:context="com.sanja.example.twitterapp.home.MainActivity">
 
     <include layout="@layout/toolbar"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_tweets"
+    <com.sanja.example.twitterapp.app.ui.ViewAnimatorById
+        android:id="@+id/view_animator"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_tweets"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_tweets"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.sanja.example.twitterapp.app.ui.ViewAnimatorById>
 
 </LinearLayout>

@@ -1,6 +1,6 @@
 package com.sanja.example.twitterapp.di.modules;
 
-import com.sanja.example.twitterapp.APIService;
+import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.home.HomeMvp;
 import com.sanja.example.twitterapp.home.HomePresenter;
 

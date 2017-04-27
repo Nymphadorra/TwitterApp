@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.app;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

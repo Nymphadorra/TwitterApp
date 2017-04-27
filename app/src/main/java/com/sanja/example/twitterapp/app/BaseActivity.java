@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.app;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;

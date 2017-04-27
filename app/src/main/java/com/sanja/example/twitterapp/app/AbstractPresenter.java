@@ -1,6 +1,8 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.app;
 
 import android.support.annotation.CallSuper;
+
+import com.sanja.example.twitterapp.app.BasePresenter;
 
 public abstract class AbstractPresenter<V> implements BasePresenter<V> {
 

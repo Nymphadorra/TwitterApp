@@ -1,7 +1,7 @@
 package com.sanja.example.twitterapp.home;
 
-import com.sanja.example.twitterapp.APIService;
-import com.sanja.example.twitterapp.AbstractPresenter;
+import com.sanja.example.twitterapp.app.api.APIService;
+import com.sanja.example.twitterapp.app.AbstractPresenter;
 import com.sanja.example.twitterapp.SearchResponse;
 import com.sanja.example.twitterapp.Tweet;
 
@@ -48,4 +48,23 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
         view().showTweets(tweets);
     }
 
+    @Override
+    public void onAutoScrollClicked() {
+
+    }
+
+    @Override
+    public void onListLayoutClicked() {
+        view().showListLayout();
+    }
+
+    @Override
+    public void onPagerLayoutClicked() {
+        view().showPagerLayout();
+    }
+
+    @Override
+    public void onSettingsClicked() {
+
+    }
 }
