@@ -15,7 +15,7 @@ import retrofit2.Response;
 public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements HomeMvp.Presenter {
 
     private static final int SEARCH_COUNT = 10;
-    private static final String DEFAULT_SEARCH_QUERY = "Aristotel";
+    private static final String DEFAULT_SEARCH_QUERY = "Elon Musk";
 
     private final APIService apiService;
 

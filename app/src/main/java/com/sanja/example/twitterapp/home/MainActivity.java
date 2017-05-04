@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
@@ -49,6 +50,7 @@ public class MainActivity extends BaseActivity implements
     @BindString(R.string.error_network) String errorNetworkMessage;
 
     private boolean listActive = true;
+    private boolean isPaginationAlreadySet = false;
     private TweetsRecyclerAdapter tweetsRecyclerAdapter;
     private TweetsPagerAdapter tweetsPagerAdapter;
     private int currentTweetPosition = 0;
@@ -67,14 +69,15 @@ public class MainActivity extends BaseActivity implements
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
         tweetsRecyclerAdapter = new TweetsRecyclerAdapter(this, this, picasso);
         rvTweets.setAdapter(tweetsRecyclerAdapter);
-        setupTweetsPagination();
 
         tweetsPagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(tweetsPagerAdapter);
+        viewPager.setPageMargin(20);
         viewPager.addOnPageChangeListener(new PageSelectedListener() {
             @Override
             public void onPageSelected(int position) {
                 currentTweetPosition = position;
+                loadMoreTweets(position);
             }
         });
 
@@ -96,6 +99,7 @@ public class MainActivity extends BaseActivity implements
     public void showTweets(List<Tweet> tweets) {
         tweetsRecyclerAdapter.refreshTweets(tweets);
         tweetsPagerAdapter.refreshTweets(tweets);
+        setupTweetsPagination(isPaginationAlreadySet);
     }
 
     @Override
@@ -176,11 +180,14 @@ public class MainActivity extends BaseActivity implements
         homeComponent.inject(this);
     }
 
-    private void setupTweetsPagination() {
-        Paginate.with(rvTweets, callbacks)
-                .setLoadingTriggerThreshold(2)
-                .addLoadingListItem(true)
-                .build();
+    private void setupTweetsPagination(boolean isPaginationAlreadySet) {
+        if(!isPaginationAlreadySet) {
+            this.isPaginationAlreadySet = true;
+            Paginate.with(rvTweets, callbacks)
+                    .setLoadingTriggerThreshold(2)
+                    .addLoadingListItem(true)
+                    .build();
+        }
     }
 
     Paginate.Callbacks callbacks = new Paginate.Callbacks() {
@@ -221,6 +228,12 @@ public class MainActivity extends BaseActivity implements
 
     private void onItemsLoadComplete() {
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void loadMoreTweets(int position) {
+        if(position == viewPager.getAdapter().getCount() - 3) {
+            presenter.onLoadMoreTweets();
+        }
     }
 
 }
