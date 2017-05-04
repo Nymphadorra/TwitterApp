@@ -3,6 +3,7 @@ package com.sanja.example.twitterapp.home;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,12 +27,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity implements
         HomeMvp.View,
-        ItemClickListener {
+        ItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener{
 
     @Inject HomeMvp.Presenter presenter;
     @Inject Picasso picasso;
@@ -40,6 +44,9 @@ public class MainActivity extends BaseActivity implements
     @BindView(R.id.rv_tweets) RecyclerView rvTweets;
     @BindView(R.id.view_animator) ViewAnimatorById viewAnimator;
     @BindView(R.id.vp_tweets) ViewPager viewPager;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindString(R.string.error_network) String errorNetworkMessage;
 
     private boolean listActive = true;
     private TweetsRecyclerAdapter tweetsRecyclerAdapter;
@@ -60,6 +67,7 @@ public class MainActivity extends BaseActivity implements
         rvTweets.setLayoutManager(new LinearLayoutManager(this));
         tweetsRecyclerAdapter = new TweetsRecyclerAdapter(this, this, picasso);
         rvTweets.setAdapter(tweetsRecyclerAdapter);
+        setupTweetsPagination();
 
         tweetsPagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(tweetsPagerAdapter);
@@ -69,6 +77,8 @@ public class MainActivity extends BaseActivity implements
                 currentTweetPosition = position;
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -77,10 +87,21 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
+    public void onRefresh() {
+        presenter.onPullToRefresh();
+        onItemsLoadComplete();
+    }
+
+    @Override
     public void showTweets(List<Tweet> tweets) {
         tweetsRecyclerAdapter.refreshTweets(tweets);
         tweetsPagerAdapter.refreshTweets(tweets);
-        setupTweetsPagination();
+    }
+
+    @Override
+    public void showMoreTweets(List<Tweet> tweets) {
+        tweetsRecyclerAdapter.addMoreTweets(tweets);
+        tweetsPagerAdapter.addMoreTweets(tweets);
     }
 
     @Override
@@ -123,13 +144,29 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void showListLayout() {
         scrollToTopInListLayout(rvTweets, currentTweetPosition);
-        viewAnimator.setChildById(R.id.rv_tweets);
+        viewAnimator.setChildById(R.id.swipeContainer); // TODO If rvTweets is set, Animator cannot find it!!
+    }
+
+    @Override
+    public void setCurrentTweetPosition(int position) {
+        this.currentTweetPosition = position;
     }
 
     @Override
     public void showPagerLayout() {
         setFirstVisibleItemInPagerLayout(viewPager, rvTweets);
         viewAnimator.setChildById(R.id.vp_tweets);
+    }
+
+    @Override
+    public void showNetworkError() {
+        viewAnimator.setChildById(R.id.ll_network_error);
+        showToast(errorNetworkMessage);
+    }
+
+    @OnClick(R.id.btn_try_to_reconnect)
+    public void reconnect (){
+        presenter.onReconnectClicked();
     }
 
     private void injectDependencies() {
@@ -149,19 +186,19 @@ public class MainActivity extends BaseActivity implements
     Paginate.Callbacks callbacks = new Paginate.Callbacks() {
         @Override
         public void onLoadMore() {
-
+            presenter.onLoadMoreTweets();
         }
 
         @Override
         public boolean isLoading() {
             // Indicate whether new page loading is in progress or not
-            return false;
+            return presenter.isLoadingInProgress();
         }
 
         @Override
         public boolean hasLoadedAllItems() {
             // Indicate whether all data (pages) are loaded or not
-            return true;
+            return presenter.hasLoadedAllItems();
         }
     };
 
@@ -181,4 +218,9 @@ public class MainActivity extends BaseActivity implements
         LinearLayoutManager llm = (LinearLayoutManager) rv.getLayoutManager();
         vp.setCurrentItem(llm.findFirstVisibleItemPosition());
     }
+
+    private void onItemsLoadComplete() {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
 }

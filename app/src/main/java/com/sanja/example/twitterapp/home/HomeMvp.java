@@ -11,9 +11,15 @@ public class HomeMvp {
 
         void showTweets(List<Tweet> tweets);
 
+        void showMoreTweets(List<Tweet> tweets);
+
         void showListLayout();
 
+        void setCurrentTweetPosition(int position);
+
         void showPagerLayout();
+
+        void showNetworkError();
     }
 
     public interface Presenter extends BasePresenter<View> {
@@ -25,5 +31,15 @@ public class HomeMvp {
         void onPagerLayoutClicked();
 
         void onSettingsClicked();
+
+        void onPullToRefresh();
+
+        void onReconnectClicked();
+
+        void onLoadMoreTweets();
+
+        boolean isLoadingInProgress();
+
+        boolean hasLoadedAllItems();
     }
 }

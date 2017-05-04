@@ -32,4 +32,9 @@ public class TweetsPagerAdapter extends FragmentStatePagerAdapter {
         this.tweets.addAll(tweets);
         notifyDataSetChanged();
     }
+
+    public void addMoreTweets(List<Tweet> tweets) {
+        this.tweets.addAll(tweets);
+        notifyDataSetChanged();
+    }
 }

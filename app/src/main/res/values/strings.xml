@@ -8,14 +8,10 @@
     <string name="menu_item_title_settings">Settings</string>
 
     <!-- Buttons -->
-    <string name="btn_auto_scroll">Auto scroll</string>
-    <string name="btn_layout">Layout</string>
-    <string name="btn_settings">Settings</string>
+    <string name="btn_try_to_reconnect">Try to reconnect</string>
 
     <!-- Error messages -->
     <string name="error_tweet_date">Unknown date</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_network">Something went wrong. Please try again.</string>
 
 </resources>

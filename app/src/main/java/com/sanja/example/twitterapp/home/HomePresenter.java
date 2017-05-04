@@ -14,8 +14,14 @@ import retrofit2.Response;
 
 public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements HomeMvp.Presenter {
 
-    private static final String DEFAULT_SEARCH_QUERY = "Elon Musk";
+    private static final int SEARCH_COUNT = 10;
+    private static final String DEFAULT_SEARCH_QUERY = "Aristotel";
+
     private final APIService apiService;
+
+    private String nextResults;
+    private boolean isLoadingInProgress = false;
+    private boolean hasLoadedAllItems = false;
 
     public HomePresenter(APIService apiService) {
         this.apiService = apiService;
@@ -24,28 +30,6 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
     @Override
     protected void onBind() {
         search(DEFAULT_SEARCH_QUERY);
-    }
-
-    private void search(String searchInput) {
-        apiService.searchTweets(searchInput).enqueue(new Callback<SearchResponse>() {
-            @Override
-            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-                if(response.isSuccessful()) {
-                    handleSearchSuccess(response.body().getTweets());
-                } else {
-                    // Show default error message or connection lost?
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SearchResponse> call, Throwable t) {
-                // Show default error message or connection lost.
-            }
-        });
-    }
-
-    private void handleSearchSuccess(List<Tweet> tweets) {
-        view().showTweets(tweets);
     }
 
     @Override
@@ -66,5 +50,81 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
     @Override
     public void onSettingsClicked() {
 
+    }
+
+    @Override
+    public void onPullToRefresh() {
+        search(DEFAULT_SEARCH_QUERY);
+        view().setCurrentTweetPosition(0);
+    }
+
+    @Override
+    public void onReconnectClicked() {
+        search(DEFAULT_SEARCH_QUERY);
+    }
+
+    @Override
+    public void onLoadMoreTweets() {
+        searchMoreTweets(nextResults);
+    }
+
+    @Override
+    public boolean isLoadingInProgress() {
+        return isLoadingInProgress;
+    }
+
+    @Override
+    public boolean hasLoadedAllItems() {
+        return hasLoadedAllItems;
+    }
+
+    private void search(String searchInput) {
+        apiService.searchTweets(searchInput, SEARCH_COUNT).enqueue(new Callback<SearchResponse>() {
+            @Override
+            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+                if(response.isSuccessful()) {
+                    setNextResults(response.body().getSearchMetaData().getNextResults());
+                    handleSearchSuccess(response.body().getTweets());
+                } else {
+                    handleSearchFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchResponse> call, Throwable t) {
+                handleSearchFailure();
+            }
+        });
+    }
+
+    private void searchMoreTweets(String nextResults) {
+        isLoadingInProgress = true;
+        apiService.searchMoreTweets(nextResults).enqueue(new Callback<SearchResponse>() {
+            @Override
+            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+                isLoadingInProgress = false;
+                setNextResults(response.body().getSearchMetaData().getNextResults());
+                view().showMoreTweets(response.body().getTweets());
+            }
+
+            @Override
+            public void onFailure(Call<SearchResponse> call, Throwable t) {
+                handleSearchFailure();
+                isLoadingInProgress = false;
+            }
+        });
+    }
+    private void handleSearchSuccess(List<Tweet> tweets) {
+        view().showTweets(tweets);
+        view().showListLayout();
+    }
+
+    private void handleSearchFailure() {
+        isLoadingInProgress = false;
+        view().showNetworkError();
+    }
+
+    private void setNextResults(String nextResults) {
+        this.nextResults = "search/tweets.json" + nextResults;
     }
 }

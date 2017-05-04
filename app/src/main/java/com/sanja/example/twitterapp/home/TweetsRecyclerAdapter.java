@@ -66,6 +66,11 @@ public class TweetsRecyclerAdapter extends RecyclerView.Adapter<TweetsRecyclerAd
         notifyDataSetChanged();
     }
 
+    public void addMoreTweets(List<Tweet> tweets) {
+        this.tweets.addAll(tweets);
+        notifyDataSetChanged();
+    }
+
     public List<Tweet> getTweets() {
         return tweets;
     }
