@@ -13,5 +13,6 @@
     <!-- Error messages -->
     <string name="error_tweet_date">Unknown date</string>
     <string name="error_network">Something went wrong. Please try again.</string>
+    <string name="empty_response">Nothing to display.</string>
 
 </resources>

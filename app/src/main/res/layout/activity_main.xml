@@ -29,13 +29,17 @@
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_tweets"
-            android:layout_margin="4dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"/>
 
         <include
-            layout="@layout/network_error"
-            android:id="@+id/ll_network_error"/>
+            android:id="@+id/ll_network_error"
+            layout="@layout/network_error"/>
+
+        <include
+            android:id="@+id/empty_response"
+            layout="@layout/empty_response"/>
 
     </com.sanja.example.twitterapp.app.ui.ViewAnimatorById>
 

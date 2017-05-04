@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
@@ -166,6 +165,11 @@ public class MainActivity extends BaseActivity implements
     public void showNetworkError() {
         viewAnimator.setChildById(R.id.ll_network_error);
         showToast(errorNetworkMessage);
+    }
+
+    @Override
+    public void showEmptyResponse() {
+        viewAnimator.setChildById(R.id.empty_response);
     }
 
     @OnClick(R.id.btn_try_to_reconnect)

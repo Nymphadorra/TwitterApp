@@ -82,7 +82,7 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
         apiService.searchTweets(searchInput, SEARCH_COUNT).enqueue(new Callback<SearchResponse>() {
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     setNextResults(response.body().getSearchMetaData().getNextResults());
                     handleSearchSuccess(response.body().getTweets());
                 } else {
@@ -103,8 +103,12 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 isLoadingInProgress = false;
-                setNextResults(response.body().getSearchMetaData().getNextResults());
-                view().showMoreTweets(response.body().getTweets());
+                if(response.body().getTweets() != null) {
+                    setNextResults(response.body().getSearchMetaData().getNextResults());
+                    view().showMoreTweets(response.body().getTweets());
+                } else {
+                    view().showEmptyResponse();
+                }
             }
 
             @Override
@@ -114,6 +118,7 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
             }
         });
     }
+
     private void handleSearchSuccess(List<Tweet> tweets) {
         view().showTweets(tweets);
         view().showListLayout();

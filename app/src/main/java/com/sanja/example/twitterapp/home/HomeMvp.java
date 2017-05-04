@@ -20,6 +20,8 @@ public class HomeMvp {
         void showPagerLayout();
 
         void showNetworkError();
+
+        void showEmptyResponse();
     }
 
     public interface Presenter extends BasePresenter<View> {

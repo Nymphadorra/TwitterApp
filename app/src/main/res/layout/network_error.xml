@@ -9,9 +9,10 @@
 
     <ImageView
         android:id="@+id/ic_no_wifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:padding="30dp"
         android:layout_weight="1"
         android:src="@drawable/ic_signal_wifi_off_black"/>
 
@@ -20,8 +21,9 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="20dp"
         android:layout_gravity="center"
+        android:layout_margin="40dp"
+        android:padding="20dp"
         android:text="@string/btn_try_to_reconnect"/>
 
 </LinearLayout>
