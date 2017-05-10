@@ -22,11 +22,21 @@ public class HomeMvp {
         void showNetworkError();
 
         void showEmptyResponse();
+
+        void startListAutoScroll(final int listAutoScrollDelay);
+
+        void startPagerAutoScroll(final int pagerAutoScrollDelay);
+
+        void stopListAutoScroll();
+
+        void stopPagerAutoScroll();
     }
 
     public interface Presenter extends BasePresenter<View> {
 
-        void onAutoScrollClicked();
+        void onListAutoScrollClicked();
+
+        void onPagerAutoScrollClicked();
 
         void onListLayoutClicked();
 

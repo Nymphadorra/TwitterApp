@@ -17,7 +17,7 @@ public class AppComponentContainer {
 
     public static void init(Application app) {
         appComponent = DaggerAppComponent.builder()
-                .mainModule(new MainModule(app)) // Modules with parameters must be explicitly created
+                .mainModule(new MainModule(app)) // Modules with parameters must be explicitly created.
                 .build();
     }
 }

@@ -15,13 +15,15 @@ import retrofit2.Response;
 public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements HomeMvp.Presenter {
 
     private static final int SEARCH_COUNT = 10;
-    private static final String DEFAULT_SEARCH_QUERY = "Elon Musk";
+    private static final int LIST_AUTO_SCROLL_DELAY = 10000;
+    private static final int PAGER_AUTO_SCROLL_DELAY = 7000;
+    private static final String DEFAULT_SEARCH_QUERY = "Aristotel";
 
     private final APIService apiService;
 
-    private String nextResults;
     private boolean isLoadingInProgress = false;
     private boolean hasLoadedAllItems = false;
+    private String nextResults;
 
     public HomePresenter(APIService apiService) {
         this.apiService = apiService;
@@ -33,8 +35,13 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
     }
 
     @Override
-    public void onAutoScrollClicked() {
+    public void onListAutoScrollClicked() {
+       view().startListAutoScroll(LIST_AUTO_SCROLL_DELAY);
+    }
 
+    @Override
+    public void onPagerAutoScrollClicked() {
+        view().startPagerAutoScroll(PAGER_AUTO_SCROLL_DELAY);
     }
 
     @Override
@@ -103,7 +110,7 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 isLoadingInProgress = false;
-                if(response.body().getTweets() != null) {
+                if (response.body().getTweets() != null) {
                     setNextResults(response.body().getSearchMetaData().getNextResults());
                     view().showMoreTweets(response.body().getTweets());
                 } else {

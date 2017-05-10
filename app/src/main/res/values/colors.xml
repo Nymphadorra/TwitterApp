@@ -4,9 +4,8 @@
     <color name="colorPrimary">#452b26</color>
     <color name="colorPrimaryDark">#2b1b18</color>
     <color name="colorAccent">#40e2ff</color>
-    <color name="colorDivider">#a9a8a8</color>
-    <color name="colorHintText">#595959</color>
     <color name="colorNetworkErrorBackground">#643c3c</color>
     <color name="cardViewBackground">#dcbaba</color>
+    <color name="autoScrollOff">#686666</color>
 
 </resources>

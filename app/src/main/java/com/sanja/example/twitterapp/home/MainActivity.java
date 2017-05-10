@@ -2,11 +2,12 @@ package com.sanja.example.twitterapp.home;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
@@ -14,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ViewAnimator;
 
 import com.paginate.Paginate;
+import com.sanja.example.twitterapp.LinearLayoutManagerWithSmoothScroller;
 import com.sanja.example.twitterapp.app.BaseActivity;
 import com.sanja.example.twitterapp.ItemClickListener;
 import com.sanja.example.twitterapp.R;
@@ -35,7 +37,9 @@ import butterknife.OnClick;
 public class MainActivity extends BaseActivity implements
         HomeMvp.View,
         ItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
+
+    private static final String LOG_TAG = "Main Activity";
 
     @Inject HomeMvp.Presenter presenter;
     @Inject Picasso picasso;
@@ -48,11 +52,17 @@ public class MainActivity extends BaseActivity implements
 
     @BindString(R.string.error_network) String errorNetworkMessage;
 
-    private boolean listActive = true;
+    private boolean listActive = true; // TODO Rename. Unclear reference!
     private boolean isPaginationAlreadySet = false;
+    private boolean isListAutoScrollOn = false;
+    private boolean isPagerAutoScrollOn = false;
     private TweetsRecyclerAdapter tweetsRecyclerAdapter;
     private TweetsPagerAdapter tweetsPagerAdapter;
+    private MenuItem listAutoScroll;
+    private MenuItem pagerAutoScroll;
+    private Handler handler;
     private int currentTweetPosition = 0;
+    private int pagerAutoScrollPosition = currentTweetPosition + 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +75,7 @@ public class MainActivity extends BaseActivity implements
 
         setViewAnimatorAnimations(this, viewAnimator);
 
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        rvTweets.setLayoutManager(new LinearLayoutManagerWithSmoothScroller(this));
         tweetsRecyclerAdapter = new TweetsRecyclerAdapter(this, this, picasso);
         rvTweets.setAdapter(tweetsRecyclerAdapter);
 
@@ -76,7 +86,10 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onPageSelected(int position) {
                 currentTweetPosition = position;
-                loadMoreTweets(position);
+                pagerAutoScrollPosition = position + 1;
+                if (shouldLoadMoreTweets(position)) {
+                    presenter.onLoadMoreTweets();
+                }
             }
         });
 
@@ -99,6 +112,7 @@ public class MainActivity extends BaseActivity implements
         tweetsRecyclerAdapter.refreshTweets(tweets);
         tweetsPagerAdapter.refreshTweets(tweets);
         setupTweetsPagination(isPaginationAlreadySet);
+        handler = new Handler();
     }
 
     @Override
@@ -110,6 +124,8 @@ public class MainActivity extends BaseActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        listAutoScroll = menu.findItem(R.id.menu_item_list_auto_scroll);
+        pagerAutoScroll = menu.findItem(R.id.menu_item_pager_auto_scroll);
         return true;
     }
 
@@ -117,26 +133,46 @@ public class MainActivity extends BaseActivity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_item_list_layout).setVisible(!listActive);
         menu.findItem(R.id.menu_item_pager_layout).setVisible(listActive);
+        menu.findItem(R.id.menu_item_list_auto_scroll).setVisible(listActive);
+        menu.findItem(R.id.menu_item_pager_auto_scroll).setVisible(!listActive);
+        refreshAutoScroll();
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case (R.id.menu_item_auto_scroll):
-                presenter.onAutoScrollClicked();
+            case (R.id.menu_item_list_auto_scroll):
+                invalidateOptionsMenu();
+                if (!isListAutoScrollOn) {
+                    isListAutoScrollOn = true;
+                } else {
+                    stopListAutoScroll();
+                }
+                presenter.onListAutoScrollClicked();
                 return true;
-            case(R.id.menu_item_list_layout):
+            case (R.id.menu_item_pager_auto_scroll):
+                invalidateOptionsMenu();
+                if (!isPagerAutoScrollOn) {
+                    isPagerAutoScrollOn = true;
+                } else {
+                    stopPagerAutoScroll();
+                }
+                presenter.onPagerAutoScrollClicked();
+                return true;
+            case (R.id.menu_item_list_layout):
                 listActive = true;
                 invalidateOptionsMenu();
+                isPagerAutoScrollOn = false;
                 presenter.onListLayoutClicked();
                 return true;
-            case(R.id.menu_item_pager_layout):
+            case (R.id.menu_item_pager_layout):
                 listActive = false;
                 invalidateOptionsMenu();
+                isListAutoScrollOn = false;
                 presenter.onPagerLayoutClicked();
                 return true;
-            case(R.id.menu_item_settings):
+            case (R.id.menu_item_settings):
                 presenter.onSettingsClicked();
                 return true;
             default:
@@ -147,7 +183,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void showListLayout() {
         scrollToTopInListLayout(rvTweets, currentTweetPosition);
-        viewAnimator.setChildById(R.id.swipeContainer); // TODO If rvTweets is set, Animator cannot find it!!
+        viewAnimator.setChildById(R.id.swipeContainer);
     }
 
     @Override
@@ -173,8 +209,54 @@ public class MainActivity extends BaseActivity implements
     }
 
     @OnClick(R.id.btn_try_to_reconnect)
-    public void reconnect (){
+    public void reconnect() {
         presenter.onReconnectClicked();
+    }
+
+    @Override
+    public void startListAutoScroll(final int listDelayInMilliseconds) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (isListAutoScrollOn) {
+                    LinearLayoutManagerWithSmoothScroller llm = (LinearLayoutManagerWithSmoothScroller) rvTweets.getLayoutManager();
+                    rvTweets.smoothScrollToPosition(llm.findLastVisibleItemPosition());
+                    handler.postDelayed(this, listDelayInMilliseconds);
+                } else {
+                    handler.removeCallbacks(this);
+                    Log.i(LOG_TAG, "List Runnable terminated!");
+                }
+            }
+        };
+        handler.postDelayed(runnable, listDelayInMilliseconds);
+    }
+
+    @Override
+    public void startPagerAutoScroll(final int pagerDelayInMilliseconds) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (isPagerAutoScrollOn) {
+                    viewPager.setCurrentItem(pagerAutoScrollPosition, true);
+                    handler.postDelayed(this, pagerDelayInMilliseconds);
+                    Log.i(LOG_TAG, "Current position: " + currentTweetPosition + "\t PagerItem position: " + pagerAutoScrollPosition);
+                } else {
+                    handler.removeCallbacks(this);
+                    Log.i(LOG_TAG, "Pager Runnable terminated!");
+                }
+            }
+        };
+        handler.postDelayed(runnable, pagerDelayInMilliseconds);
+    }
+
+    @Override
+    public void stopListAutoScroll() {
+        isListAutoScrollOn = false;
+    }
+
+    @Override
+    public void stopPagerAutoScroll() {
+        isPagerAutoScrollOn = false;
     }
 
     private void injectDependencies() {
@@ -185,7 +267,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void setupTweetsPagination(boolean isPaginationAlreadySet) {
-        if(!isPaginationAlreadySet) {
+        if (!isPaginationAlreadySet) {
             this.isPaginationAlreadySet = true;
             Paginate.with(rvTweets, callbacks)
                     .setLoadingTriggerThreshold(2)
@@ -213,7 +295,7 @@ public class MainActivity extends BaseActivity implements
         }
     };
 
-    private void setViewAnimatorAnimations(Context context, ViewAnimator va){
+    private void setViewAnimatorAnimations(Context context, ViewAnimator va) {
         Animation in = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
         Animation out = AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right);
         va.setInAnimation(in);
@@ -221,23 +303,34 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void scrollToTopInListLayout(RecyclerView rv, int currentItemPosition) {
-        LinearLayoutManager llm = (LinearLayoutManager) rv.getLayoutManager();
+        LinearLayoutManagerWithSmoothScroller llm = (LinearLayoutManagerWithSmoothScroller) rv.getLayoutManager();
         llm.scrollToPositionWithOffset(currentItemPosition, 0);
     }
 
     private void setFirstVisibleItemInPagerLayout(ViewPager vp, RecyclerView rv) {
-        LinearLayoutManager llm = (LinearLayoutManager) rv.getLayoutManager();
-        vp.setCurrentItem(llm.findFirstVisibleItemPosition());
+        LinearLayoutManagerWithSmoothScroller llm = (LinearLayoutManagerWithSmoothScroller) rv.getLayoutManager();
+        vp.setCurrentItem(llm.findFirstVisibleItemPosition(), true);
     }
 
     private void onItemsLoadComplete() {
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    private void loadMoreTweets(int position) {
-        if(position == viewPager.getAdapter().getCount() - 3) {
-            presenter.onLoadMoreTweets();
-        }
+    private boolean shouldLoadMoreTweets(int position) {
+        return position == viewPager.getAdapter().getCount() - 3;
     }
 
+    private void refreshAutoScroll() {
+        if (isListAutoScrollOn) {
+            listAutoScroll.setIcon(R.drawable.ic_auto_scroll_on);
+        } else {
+            listAutoScroll.setIcon(R.drawable.ic_auto_scroll_off);
+        }
+
+        if (isPagerAutoScrollOn) {
+            pagerAutoScroll.setIcon(R.drawable.ic_auto_scroll_on);
+        } else {
+            pagerAutoScroll.setIcon(R.drawable.ic_auto_scroll_off);
+        }
+    }
 }

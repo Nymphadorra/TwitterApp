@@ -3,10 +3,18 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_auto_scroll"
-        android:icon="@drawable/ic_auto_scroll_black"
+        android:id="@+id/menu_item_list_auto_scroll"
+        android:icon="@drawable/ic_auto_scroll_off"
         android:title="@string/menu_item_title_auto_scroll"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+        android:checkable="true"/>
+
+    <item
+        android:id="@+id/menu_item_pager_auto_scroll"
+        android:icon="@drawable/ic_auto_scroll_off"
+        android:title="@string/menu_item_title_auto_scroll"
+        app:showAsAction="always"
+        android:checkable="true"/>
 
     <item
         android:id="@+id/menu_item_list_layout"
