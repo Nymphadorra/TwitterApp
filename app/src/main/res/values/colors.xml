@@ -7,5 +7,7 @@
     <color name="colorNetworkErrorBackground">#643c3c</color>
     <color name="cardViewBackground">#dcbaba</color>
     <color name="autoScrollOff">#686666</color>
+    <color name="colorDivider">#b7b4b4</color>
+    <color name="searchQueryBackground">#d3f4f7</color>
 
 </resources>

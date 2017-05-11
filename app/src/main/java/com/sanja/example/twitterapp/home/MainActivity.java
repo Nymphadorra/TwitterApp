@@ -1,6 +1,7 @@
 package com.sanja.example.twitterapp.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -23,6 +24,7 @@ import com.sanja.example.twitterapp.Tweet;
 import com.sanja.example.twitterapp.app.ui.ViewAnimatorById;
 import com.sanja.example.twitterapp.app.utils.PageSelectedListener;
 import com.sanja.example.twitterapp.di.components.AppComponentContainer;
+import com.sanja.example.twitterapp.settings.SearchQueriesActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -257,6 +259,11 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void stopPagerAutoScroll() {
         isPagerAutoScrollOn = false;
+    }
+
+    @Override
+    public void startSettingsActivity() {
+        startActivity(new Intent(this, SearchQueriesActivity.class));
     }
 
     private void injectDependencies() {

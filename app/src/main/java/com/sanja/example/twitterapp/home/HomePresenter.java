@@ -56,7 +56,7 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     @Override
     public void onSettingsClicked() {
-
+        view().startSettingsActivity();
     }
 
     @Override

@@ -30,6 +30,8 @@ public class HomeMvp {
         void stopListAutoScroll();
 
         void stopPagerAutoScroll();
+
+        void startSettingsActivity();
     }
 
     public interface Presenter extends BasePresenter<View> {
