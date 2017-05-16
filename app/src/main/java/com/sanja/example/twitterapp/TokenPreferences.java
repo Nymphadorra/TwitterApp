@@ -2,13 +2,13 @@ package com.sanja.example.twitterapp;
 
 import android.content.SharedPreferences;
 
-public class Preferences {
+public class TokenPreferences {
 
     private static final String PREF_KEY_TOKEN = "pref_key_token";
 
     private final SharedPreferences sharedPreferences;
 
-    public Preferences(SharedPreferences sharedPreferences) {
+    public TokenPreferences(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
 

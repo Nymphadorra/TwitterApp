@@ -6,24 +6,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sanja.example.twitterapp.ItemClickListener;
+import com.sanja.example.twitterapp.OnStartDragListener;
 import com.sanja.example.twitterapp.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 
-public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdapter.SearchQueriesViewHolder>{
+public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdapter.SearchQueriesViewHolder>
+        implements ItemTouchHelperAdapter {
 
-    private List<String> searchQueries;
-    private final ItemClickListener listener;
+    public interface ItemRemoveListener {
+        void onItemRemoved(int position);
+    }
 
-    public SearchQueriesAdapter(ItemClickListener listener){
+    private List<SearchQuery> searchQueries;
+    private final OnStartDragListener onStartDragListener;
+    private final ItemRemoveListener itemRemoveListener;
+
+
+    public SearchQueriesAdapter(OnStartDragListener onStartDragListener, ItemRemoveListener itemRemoveListener) {
         this.searchQueries = new ArrayList<>();
-        this.listener = listener;
+        this.onStartDragListener = onStartDragListener;
+        this.itemRemoveListener = itemRemoveListener;
     }
 
     @Override
@@ -35,7 +45,7 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
 
     @Override
     public void onBindViewHolder(SearchQueriesViewHolder holder, int position) {
-        holder.searchQuery.setText(searchQueries.get(position));
+        holder.searchQuery.setText(searchQueries.get(position).getSearchName());
     }
 
     @Override
@@ -43,9 +53,36 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
         return searchQueries.size();
     }
 
-    public void addNewSearchQuery(String searchQuery) {
-        searchQueries.add(searchQuery);
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(searchQueries, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(searchQueries, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        searchQueries.remove(position);
+        notifyItemRemoved(position);
+        itemRemoveListener.onItemRemoved(position);
+    }
+
+    public void refreshSearchQueries(List<SearchQuery> searchQueries) {
+        this.searchQueries.clear();
+        this.searchQueries.addAll(searchQueries);
         notifyDataSetChanged();
+    }
+
+    public void addItem(SearchQuery sq) {
+        this.searchQueries.add(sq);
+        notifyItemInserted(getItemCount() - 1);
     }
 
     class SearchQueriesViewHolder extends RecyclerView.ViewHolder {
@@ -57,9 +94,10 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick
-        public void onRootClicked() {
-            listener.onItemClicked(getAdapterPosition());
+        @OnTouch(R.id.drag_handle)
+        public boolean onDragHandlePressed() {
+            onStartDragListener.onStartDrag(this);
+            return true;
         }
     }
 }

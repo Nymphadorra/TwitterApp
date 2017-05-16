@@ -7,7 +7,7 @@ import com.sanja.example.twitterapp.app.api.APIConstants;
 import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.app.api.APIServiceAuth;
 import com.sanja.example.twitterapp.app.api.AuthHeaderInterceptor;
-import com.sanja.example.twitterapp.Preferences;
+import com.sanja.example.twitterapp.TokenPreferences;
 import com.sanja.example.twitterapp.TokenManager;
 import com.sanja.example.twitterapp.di.AppScope;
 import com.sanja.example.twitterapp.di.qualifiers.Auth;
@@ -107,8 +107,8 @@ public class APIModule {
 
     @AppScope
     @Provides
-    public TokenManager provideTokenManager(APIServiceAuth apiServiceAuth, Preferences preferences) {
-        return new TokenManager(apiServiceAuth, preferences);
+    public TokenManager provideTokenManager(APIServiceAuth apiServiceAuth, TokenPreferences tokenPreferences) {
+        return new TokenManager(apiServiceAuth, tokenPreferences);
     }
 
     @Provides

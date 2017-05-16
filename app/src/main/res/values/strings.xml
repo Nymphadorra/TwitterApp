@@ -15,4 +15,8 @@
     <string name="error_network">Something went wrong. Please try again.</string>
     <string name="empty_response">Nothing to display.</string>
 
+    <!-- Dialog box editTexts -->
+    <string name="searchName">Search name</string>
+    <string name="searchQuery">Search query</string>
+
 </resources>

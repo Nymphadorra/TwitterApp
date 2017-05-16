@@ -11,13 +11,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements HomeMvp.Presenter {
 
     private static final int SEARCH_COUNT = 10;
     private static final int LIST_AUTO_SCROLL_DELAY = 10000;
     private static final int PAGER_AUTO_SCROLL_DELAY = 7000;
-    private static final String DEFAULT_SEARCH_QUERY = "Aristotel";
+    private static final String DEFAULT_SEARCH_QUERY = "Elon Musk";
 
     private final APIService apiService;
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.sanja.example.twitterapp.R;
 import com.sanja.example.twitterapp.Tweet;
 import com.sanja.example.twitterapp.app.ui.ViewAnimatorById;
 import com.sanja.example.twitterapp.app.utils.PageSelectedListener;
+import com.sanja.example.twitterapp.di.components.AppComponent;
 import com.sanja.example.twitterapp.di.components.AppComponentContainer;
 import com.sanja.example.twitterapp.settings.SearchQueriesActivity;
 import com.squareup.picasso.Picasso;
@@ -71,9 +73,8 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        injectDependencies();
-        setupToolbar(toolbar);
         presenter.bind(this);
+        setupToolbar(toolbar);
 
         setViewAnimatorAnimations(this, viewAnimator);
 
@@ -114,7 +115,7 @@ public class MainActivity extends BaseActivity implements
         tweetsRecyclerAdapter.refreshTweets(tweets);
         tweetsPagerAdapter.refreshTweets(tweets);
         setupTweetsPagination(isPaginationAlreadySet);
-        handler = new Handler();
+        handler = new Handler(); // Todo: put this maybe in onCreate?
     }
 
     @Override
@@ -266,9 +267,10 @@ public class MainActivity extends BaseActivity implements
         startActivity(new Intent(this, SearchQueriesActivity.class));
     }
 
-    private void injectDependencies() {
+    @Override
+    protected void injectDependencies(AppComponent appComponent) {
         HomeComponent homeComponent = DaggerHomeComponent.builder()
-                .appComponent(AppComponentContainer.get())
+                .appComponent(appComponent)
                 .build();
         homeComponent.inject(this);
     }

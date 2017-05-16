@@ -1,5 +1,6 @@
 package com.sanja.example.twitterapp.di.components;
 
+import com.sanja.example.twitterapp.SearchQueriesManager;
 import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.app.api.APIServiceAuth;
 import com.sanja.example.twitterapp.di.AppScope;
@@ -25,4 +26,6 @@ public interface AppComponent {
     APIServiceAuth apiServiceAuth();
 
     Picasso picasso();
+
+    SearchQueriesManager searchQueryManager();
 }

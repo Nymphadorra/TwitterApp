@@ -11,12 +11,12 @@ public class TokenManager {
     private static final String CLIENT_CREDENTIALS = "client_credentials";
 
     private final APIServiceAuth apiServiceAuth;
-    private final Preferences preferences;
+    private final TokenPreferences tokenPreferences;
 
-    public TokenManager(APIServiceAuth apiServiceAuth, Preferences preferences) {
+    public TokenManager(APIServiceAuth apiServiceAuth, TokenPreferences tokenPreferences) {
         this.apiServiceAuth = apiServiceAuth;
-        this.preferences = preferences;
-        this.token = preferences.getToken();
+        this.tokenPreferences = tokenPreferences;
+        this.token = tokenPreferences.getToken();
     }
 
     private String token;
@@ -30,7 +30,7 @@ public class TokenManager {
             Response<Token> response = apiServiceAuth.createToken(CLIENT_CREDENTIALS).execute();
             String accessToken = response.body().getAccessToken();
             this.token = accessToken;
-            preferences.saveToken(accessToken);
+            tokenPreferences.saveToken(accessToken);
             return true;
         } catch (IOException e) {
             return false;
