@@ -5,9 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import com.sanja.example.twitterapp.SearchQueriesPreferences;
+import com.sanja.example.twitterapp.settings.SearchQueriesPreferences;
 import com.sanja.example.twitterapp.TokenPreferences;
-import com.sanja.example.twitterapp.SearchQueriesManager;
+import com.sanja.example.twitterapp.settings.SearchQueriesManager;
 import com.sanja.example.twitterapp.di.AppScope;
 
 import dagger.Module;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="dialog_options">
+        <item>@string/use</item>
+        <item>@string/edit</item>
+        <item>@string/delete</item>
+    </string-array>
+
+</resources>

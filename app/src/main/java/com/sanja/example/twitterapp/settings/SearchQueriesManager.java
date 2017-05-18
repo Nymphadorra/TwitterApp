@@ -1,13 +1,6 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.settings;
 
-import android.content.SharedPreferences;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.sanja.example.twitterapp.settings.SearchQuery;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchQueriesManager {
@@ -26,6 +19,10 @@ public class SearchQueriesManager {
 
     public List<SearchQuery> getSearchQueries() {
         return searchQueries;
+    }
+
+    public SearchQuery getSearchQuery(int itemPosition) {
+        return searchQueries.get(itemPosition);
     }
 
     public void addSearchQuery(SearchQuery sq) {

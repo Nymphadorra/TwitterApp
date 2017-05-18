@@ -27,6 +27,11 @@ public class TweetsPagerAdapter extends FragmentStatePagerAdapter {
         return tweets.size();
     }
 
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
     public void refreshTweets(List<Tweet> tweets) {
         this.tweets.clear();
         this.tweets.addAll(tweets);

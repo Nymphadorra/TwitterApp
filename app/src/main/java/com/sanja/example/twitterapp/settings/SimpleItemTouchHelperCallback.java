@@ -1,9 +1,7 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.settings;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-
-import com.sanja.example.twitterapp.settings.ItemTouchHelperAdapter;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 

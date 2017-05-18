@@ -15,8 +15,20 @@
     <string name="error_network">Something went wrong. Please try again.</string>
     <string name="empty_response">Nothing to display.</string>
 
+    <!-- Dialog box options -->
+    <string name="dialog_options_title">Pick an option</string>
+    <string name="use">Use</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+
+    <!-- Dialog box save -->
+    <string name="dialog_save_title">Create new Query</string>
+    <string name="save_item">Save</string>
+    <string name="cancel">Cancel</string>
+
     <!-- Dialog box editTexts -->
     <string name="searchName">Search name</string>
     <string name="searchQuery">Search query</string>
+    <string name="dialog_edit_title">Edit your Query</string>
 
 </resources>

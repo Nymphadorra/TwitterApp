@@ -4,6 +4,7 @@ import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.app.AbstractPresenter;
 import com.sanja.example.twitterapp.SearchResponse;
 import com.sanja.example.twitterapp.Tweet;
+import com.sanja.example.twitterapp.settings.SearchQueriesManager;
 
 import java.util.List;
 
@@ -16,21 +17,23 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
     private static final int SEARCH_COUNT = 10;
     private static final int LIST_AUTO_SCROLL_DELAY = 10000;
     private static final int PAGER_AUTO_SCROLL_DELAY = 7000;
-    private static final String DEFAULT_SEARCH_QUERY = "Elon Musk";
 
     private final APIService apiService;
-
+    private final SearchQueriesManager sqManager;
+    private  String searchQuery = "Elon Musk";
+    private String nextResults;
     private boolean isLoadingInProgress = false;
     private boolean hasLoadedAllItems = false;
-    private String nextResults;
+    private Layout currentLayout = Layout.LIST;
 
-    public HomePresenter(APIService apiService) {
+    public HomePresenter(APIService apiService, SearchQueriesManager sqManager) {
         this.apiService = apiService;
+        this.sqManager = sqManager;
     }
 
     @Override
     protected void onBind() {
-        search(DEFAULT_SEARCH_QUERY);
+        search(sqManager.getSearchQueries().get(0).getSearchQuery());
     }
 
     @Override
@@ -45,11 +48,13 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     @Override
     public void onListLayoutClicked() {
+        currentLayout = Layout.LIST;
         view().showListLayout();
     }
 
     @Override
     public void onPagerLayoutClicked() {
+        currentLayout = Layout.PAGER;
         view().showPagerLayout();
     }
 
@@ -60,13 +65,13 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     @Override
     public void onPullToRefresh() {
-        search(DEFAULT_SEARCH_QUERY);
+        search(searchQuery);
         view().setCurrentTweetPosition(0);
     }
 
     @Override
     public void onReconnectClicked() {
-        search(DEFAULT_SEARCH_QUERY);
+        search(searchQuery);
     }
 
     @Override
@@ -84,11 +89,21 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
         return hasLoadedAllItems;
     }
 
-    private void search(String searchInput) {
-        apiService.searchTweets(searchInput, SEARCH_COUNT).enqueue(new Callback<SearchResponse>() {
+    @Override
+    public void searchNewQuery(String sq) {
+        setSearchQuery(sq);
+        search(sq);
+    }
+
+    public void setSearchQuery(String newSQ) {
+        this.searchQuery = newSQ;
+    }
+
+    private void search(String searchQuery) {
+        apiService.searchTweets(searchQuery, SEARCH_COUNT).enqueue(new Callback<SearchResponse>() {
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body().getTweets() != null) {
                     setNextResults(response.body().getSearchMetaData().getNextResults());
                     handleSearchSuccess(response.body().getTweets());
                 } else {
@@ -109,7 +124,7 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 isLoadingInProgress = false;
-                if (response.body().getTweets() != null) {
+                if (response.isSuccessful() && response.body().getTweets() != null) {
                     setNextResults(response.body().getSearchMetaData().getNextResults());
                     view().showMoreTweets(response.body().getTweets());
                 } else {
@@ -127,7 +142,11 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     private void handleSearchSuccess(List<Tweet> tweets) {
         view().showTweets(tweets);
-        view().showListLayout();
+        if(currentLayout == Layout.LIST) {
+            view().showListLayout();
+        } else {
+            view().showPagerLayout();
+        }
     }
 
     private void handleSearchFailure() {

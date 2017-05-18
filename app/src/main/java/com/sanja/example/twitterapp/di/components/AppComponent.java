@@ -1,13 +1,12 @@
 package com.sanja.example.twitterapp.di.components;
 
-import com.sanja.example.twitterapp.SearchQueriesManager;
+import com.sanja.example.twitterapp.settings.SearchQueriesManager;
 import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.app.api.APIServiceAuth;
 import com.sanja.example.twitterapp.di.AppScope;
 import com.sanja.example.twitterapp.di.modules.APIModule;
 import com.sanja.example.twitterapp.di.modules.DataModule;
 import com.sanja.example.twitterapp.di.modules.MainModule;
-import com.sanja.example.twitterapp.home.MainActivity;
 import com.sanja.example.twitterapp.home.TweetFragment;
 import com.squareup.picasso.Picasso;
 

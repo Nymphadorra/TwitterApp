@@ -55,5 +55,7 @@ public class HomeMvp {
         boolean isLoadingInProgress();
 
         boolean hasLoadedAllItems();
+
+        void searchNewQuery(String sq);
     }
 }

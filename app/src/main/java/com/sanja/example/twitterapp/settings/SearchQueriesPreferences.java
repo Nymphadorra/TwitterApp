@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.settings;
 
 import android.content.SharedPreferences;
 

@@ -1,12 +1,12 @@
 package com.sanja.example.twitterapp.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,7 +17,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ViewAnimator;
 
 import com.paginate.Paginate;
-import com.sanja.example.twitterapp.LinearLayoutManagerWithSmoothScroller;
 import com.sanja.example.twitterapp.app.BaseActivity;
 import com.sanja.example.twitterapp.ItemClickListener;
 import com.sanja.example.twitterapp.R;
@@ -25,7 +24,6 @@ import com.sanja.example.twitterapp.Tweet;
 import com.sanja.example.twitterapp.app.ui.ViewAnimatorById;
 import com.sanja.example.twitterapp.app.utils.PageSelectedListener;
 import com.sanja.example.twitterapp.di.components.AppComponent;
-import com.sanja.example.twitterapp.di.components.AppComponentContainer;
 import com.sanja.example.twitterapp.settings.SearchQueriesActivity;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +42,8 @@ public class MainActivity extends BaseActivity implements
         SwipeRefreshLayout.OnRefreshListener {
 
     private static final String LOG_TAG = "Main Activity";
+    private static final String EXTRA_SEARCH_QUERY = "search_query";
+    private static final int RC_SEARCH_QUERIES = 0;
 
     @Inject HomeMvp.Presenter presenter;
     @Inject Picasso picasso;
@@ -264,7 +264,17 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void startSettingsActivity() {
-        startActivity(new Intent(this, SearchQueriesActivity.class));
+        startActivityForResult(new Intent(this, SearchQueriesActivity.class), RC_SEARCH_QUERIES);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SEARCH_QUERIES) {
+            if(resultCode == Activity.RESULT_OK) {
+                presenter.searchNewQuery(data.getStringExtra(EXTRA_SEARCH_QUERY));
+            }
+        }
     }
 
     @Override

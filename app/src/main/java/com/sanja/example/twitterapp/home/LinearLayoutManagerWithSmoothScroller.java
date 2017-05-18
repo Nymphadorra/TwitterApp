@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp;
+package com.sanja.example.twitterapp.home;
 
 import android.content.Context;
 import android.graphics.PointF;

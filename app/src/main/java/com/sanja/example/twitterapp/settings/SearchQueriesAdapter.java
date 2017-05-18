@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sanja.example.twitterapp.OnStartDragListener;
+import com.sanja.example.twitterapp.ItemClickListener;
 import com.sanja.example.twitterapp.R;
 
 import java.util.ArrayList;
@@ -23,17 +23,20 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
 
     public interface ItemRemoveListener {
         void onItemRemoved(int position);
+
     }
 
     private List<SearchQuery> searchQueries;
     private final OnStartDragListener onStartDragListener;
     private final ItemRemoveListener itemRemoveListener;
+    private final ItemClickListener itemClickListener;
 
 
-    public SearchQueriesAdapter(OnStartDragListener onStartDragListener, ItemRemoveListener itemRemoveListener) {
+    public SearchQueriesAdapter(OnStartDragListener onStartDragListener, ItemRemoveListener itemRemoveListener, ItemClickListener itemClickListener) {
         this.searchQueries = new ArrayList<>();
         this.onStartDragListener = onStartDragListener;
         this.itemRemoveListener = itemRemoveListener;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -98,6 +101,11 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
         public boolean onDragHandlePressed() {
             onStartDragListener.onStartDrag(this);
             return true;
+        }
+
+        @OnClick
+        public void onSQClicked(){
+            itemClickListener.onItemClicked(getAdapterPosition());
         }
     }
 }

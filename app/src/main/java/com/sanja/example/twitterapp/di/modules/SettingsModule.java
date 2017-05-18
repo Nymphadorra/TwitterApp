@@ -1,6 +1,6 @@
 package com.sanja.example.twitterapp.di.modules;
 
-import com.sanja.example.twitterapp.SearchQueriesManager;
+import com.sanja.example.twitterapp.settings.SearchQueriesManager;
 import com.sanja.example.twitterapp.settings.SearchQueriesMVP;
 import com.sanja.example.twitterapp.settings.SearchQueriesPresenter;
 

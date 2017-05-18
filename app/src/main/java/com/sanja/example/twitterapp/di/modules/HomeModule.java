@@ -3,6 +3,7 @@ package com.sanja.example.twitterapp.di.modules;
 import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.home.HomeMvp;
 import com.sanja.example.twitterapp.home.HomePresenter;
+import com.sanja.example.twitterapp.settings.SearchQueriesManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -11,7 +12,7 @@ import dagger.Provides;
 public class HomeModule {
 
     @Provides
-    public HomeMvp.Presenter provideHomePresenter(APIService apiService) {
-        return new HomePresenter(apiService);
+    public HomeMvp.Presenter provideHomePresenter(APIService apiService, SearchQueriesManager sqManager) {
+        return new HomePresenter(apiService, sqManager);
     }
 }
