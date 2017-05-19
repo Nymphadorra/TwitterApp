@@ -21,21 +21,14 @@ import butterknife.OnTouch;
 public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdapter.SearchQueriesViewHolder>
         implements ItemTouchHelperAdapter {
 
-    public interface ItemRemoveListener {
-        void onItemRemoved(int position);
-
-    }
-
     private List<SearchQuery> searchQueries;
     private final OnStartDragListener onStartDragListener;
-    private final ItemRemoveListener itemRemoveListener;
     private final ItemClickListener itemClickListener;
 
 
-    public SearchQueriesAdapter(OnStartDragListener onStartDragListener, ItemRemoveListener itemRemoveListener, ItemClickListener itemClickListener) {
+    public SearchQueriesAdapter(OnStartDragListener onStartDragListener, ItemClickListener itemClickListener) {
         this.searchQueries = new ArrayList<>();
         this.onStartDragListener = onStartDragListener;
-        this.itemRemoveListener = itemRemoveListener;
         this.itemClickListener = itemClickListener;
     }
 
@@ -74,7 +67,6 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
     public void onItemDismiss(int position) {
         searchQueries.remove(position);
         notifyItemRemoved(position);
-        itemRemoveListener.onItemRemoved(position);
     }
 
     public void refreshSearchQueries(List<SearchQuery> searchQueries) {
@@ -86,6 +78,20 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
     public void addItem(SearchQuery sq) {
         this.searchQueries.add(sq);
         notifyItemInserted(getItemCount() - 1);
+    }
+
+    public void removeItem(SearchQuery searchQuery) {
+        int position = searchQueries.indexOf(searchQuery);
+        this.searchQueries.remove(searchQuery);
+        notifyItemRemoved(position);
+    }
+
+    public SearchQuery getItem(int position) {
+        return searchQueries.get(position);
+    }
+
+    public List<SearchQuery> getSearchQueries() {
+        return searchQueries;
     }
 
     class SearchQueriesViewHolder extends RecyclerView.ViewHolder {
@@ -104,7 +110,7 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
         }
 
         @OnClick
-        public void onSQClicked(){
+        public void onSQClicked() {
             itemClickListener.onItemClicked(getAdapterPosition());
         }
     }

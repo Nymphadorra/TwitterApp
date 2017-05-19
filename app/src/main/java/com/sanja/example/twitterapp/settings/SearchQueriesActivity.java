@@ -1,7 +1,6 @@
 package com.sanja.example.twitterapp.settings;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,16 +30,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-import static android.R.attr.dialogTitle;
-import static com.sanja.example.twitterapp.R.string.searchQuery;
-
 public class SearchQueriesActivity extends BaseActivity implements
         SearchQueriesMVP.View,
         ItemClickListener,
-        OnStartDragListener,
-        SearchQueriesAdapter.ItemRemoveListener {
+        OnStartDragListener {
 
-    private static final String LOG_TAG = "SearchQuery Activity";
     private static final String EXTRA_SEARCH_QUERY = "search_query";
 
     @Inject SearchQueriesMVP.Presenter presenter;
@@ -63,7 +57,7 @@ public class SearchQueriesActivity extends BaseActivity implements
         setupToolbar(toolbar);
 
         rvSearchQueries.setLayoutManager(new LinearLayoutManager(this));
-        searchQueriesAdapter = new SearchQueriesAdapter(this, this, this);
+        searchQueriesAdapter = new SearchQueriesAdapter(this, this);
         rvSearchQueries.setAdapter(searchQueriesAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(searchQueriesAdapter);
@@ -71,6 +65,12 @@ public class SearchQueriesActivity extends BaseActivity implements
         itemTouchHelper.attachToRecyclerView(rvSearchQueries);
 
         presenter.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onViewDestroyed(searchQueriesAdapter.getSearchQueries());
     }
 
     @Override
@@ -83,18 +83,12 @@ public class SearchQueriesActivity extends BaseActivity implements
 
     @Override
     public void onItemClicked(int itemPosition) {
-        // open a dialog box for use, edit, and delete item
-        presenter.onSearchQueryItemClicked(itemPosition);
+        presenter.onSearchQueryItemClicked(searchQueriesAdapter.getItem(itemPosition));
     }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         itemTouchHelper.startDrag(viewHolder);
-    }
-
-    @Override
-    public void onItemRemoved(int position) {
-        presenter.onDeleteClicked(position);
     }
 
     @Override
@@ -108,20 +102,20 @@ public class SearchQueriesActivity extends BaseActivity implements
     }
 
     @Override
-    public void openOptionsDialogBox(final int itemPosition) {
+    public void openOptionsDialogBox(final SearchQuery searchQuery) {
         AlertDialog.Builder builder = new AlertDialog.Builder(SearchQueriesActivity.this);
         builder.setTitle(R.string.dialog_options_title)
                 .setItems(R.array.dialog_options, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                presenter.onUseClicked(itemPosition);
+                                presenter.onUseClicked(searchQuery);
                                 break;
                             case 1:
-                                presenter.onEditClicked(itemPosition);
+                                presenter.onEditClicked(searchQuery);
                                 break;
                             case 2:
-                                presenter.onDeleteClicked(itemPosition);
+                                presenter.onDeleteClicked(searchQuery);
                         }
                     }
                 });
@@ -155,24 +149,34 @@ public class SearchQueriesActivity extends BaseActivity implements
     }
 
     @Override
-    public void openEditDialog(String searchName, String searchQuery, final int itemPosition) {
+    public void openEditDialog(final SearchQuery sq) {
         AlertDialog.Builder builder = createDialogBuilder(this, editDialogTitle);
         final EditText etSearchName = (EditText) dialogView.findViewById(R.id.et_search_name);
         final EditText etSearchQuery = (EditText) dialogView.findViewById(R.id.et_search_query);
-        etSearchName.setText(searchName, TextView.BufferType.EDITABLE);
-        etSearchQuery.setText(searchQuery, TextView.BufferType.EDITABLE);
+        etSearchName.setText(sq.getSearchName(), TextView.BufferType.EDITABLE);
+        etSearchQuery.setText(sq.getSearchQuery(), TextView.BufferType.EDITABLE);
         builder.setPositiveButton(R.string.save_item, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String searchName = etSearchName.getText().toString().trim();
                 String searchQuery = etSearchQuery.getText().toString().trim();
-                presenter.onSearchQueryEdited(searchName, searchQuery, itemPosition);
+                presenter.onSearchQueryEdited(searchName, searchQuery, sq);
                 searchQueriesAdapter.notifyDataSetChanged();
                 showToast("Saved");
                 Timber.i("Saved new search query %s with name %s", searchQuery, searchName);
             }
         });
         builder.create().show();
+    }
+
+    @Override
+    public void removeItem(SearchQuery searchQuery) {
+        searchQueriesAdapter.removeItem(searchQuery);
+    }
+
+    @Override
+    public void refreshSearchQueries() {
+        searchQueriesAdapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.fab_add_search_query)
@@ -182,7 +186,7 @@ public class SearchQueriesActivity extends BaseActivity implements
 
     private AlertDialog.Builder createDialogBuilder(Context context, String dialogTitle){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        LayoutInflater inflater = this.getLayoutInflater(); //TODO context instead of this?
+        LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_search_query, null);
         dialogView = view;
         builder.setTitle(dialogTitle)

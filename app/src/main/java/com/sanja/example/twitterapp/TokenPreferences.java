@@ -19,6 +19,6 @@ public class TokenPreferences {
     }
 
     public String getToken() {
-        return sharedPreferences.getString(PREF_KEY_TOKEN, "");
+        return sharedPreferences.getString(PREF_KEY_TOKEN, "defaultToken");
     }
 }

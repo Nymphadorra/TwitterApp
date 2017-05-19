@@ -35,6 +35,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class MainActivity extends BaseActivity implements
         HomeMvp.View,
@@ -56,7 +57,7 @@ public class MainActivity extends BaseActivity implements
 
     @BindString(R.string.error_network) String errorNetworkMessage;
 
-    private boolean listActive = true; // TODO Rename. Unclear reference!
+    private boolean listDisplayed = true;
     private boolean isPaginationAlreadySet = false;
     private boolean isListAutoScrollOn = false;
     private boolean isPagerAutoScrollOn = false;
@@ -73,9 +74,7 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        presenter.bind(this);
         setupToolbar(toolbar);
-
         setViewAnimatorAnimations(this, viewAnimator);
 
         rvTweets.setLayoutManager(new LinearLayoutManagerWithSmoothScroller(this));
@@ -95,13 +94,21 @@ public class MainActivity extends BaseActivity implements
                 }
             }
         });
-
         swipeRefreshLayout.setOnRefreshListener(this);
+        presenter.bind(this);
+    }
+
+    @Override
+    protected void injectDependencies(AppComponent appComponent) {
+        HomeComponent homeComponent = DaggerHomeComponent.builder()
+                .appComponent(appComponent)
+                .build();
+        homeComponent.inject(this);
     }
 
     @Override
     public void onItemClicked(int itemPosition) {
-
+        // Open gallery and Tweet info.
     }
 
     @Override
@@ -134,10 +141,10 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_item_list_layout).setVisible(!listActive);
-        menu.findItem(R.id.menu_item_pager_layout).setVisible(listActive);
-        menu.findItem(R.id.menu_item_list_auto_scroll).setVisible(listActive);
-        menu.findItem(R.id.menu_item_pager_auto_scroll).setVisible(!listActive);
+        menu.findItem(R.id.menu_item_list_layout).setVisible(!listDisplayed);
+        menu.findItem(R.id.menu_item_pager_layout).setVisible(listDisplayed);
+        menu.findItem(R.id.menu_item_list_auto_scroll).setVisible(listDisplayed);
+        menu.findItem(R.id.menu_item_pager_auto_scroll).setVisible(!listDisplayed);
         refreshAutoScroll();
         return super.onPrepareOptionsMenu(menu);
     }
@@ -164,13 +171,13 @@ public class MainActivity extends BaseActivity implements
                 presenter.onPagerAutoScrollClicked();
                 return true;
             case (R.id.menu_item_list_layout):
-                listActive = true;
+                listDisplayed = true;
                 invalidateOptionsMenu();
                 isPagerAutoScrollOn = false;
                 presenter.onListLayoutClicked();
                 return true;
             case (R.id.menu_item_pager_layout):
-                listActive = false;
+                listDisplayed = false;
                 invalidateOptionsMenu();
                 isListAutoScrollOn = false;
                 presenter.onPagerLayoutClicked();
@@ -227,7 +234,7 @@ public class MainActivity extends BaseActivity implements
                     handler.postDelayed(this, listDelayInMilliseconds);
                 } else {
                     handler.removeCallbacks(this);
-                    Log.i(LOG_TAG, "List Runnable terminated!");
+                    Timber.i("List Runnable terminated!");
                 }
             }
         };
@@ -242,10 +249,9 @@ public class MainActivity extends BaseActivity implements
                 if (isPagerAutoScrollOn) {
                     viewPager.setCurrentItem(pagerAutoScrollPosition, true);
                     handler.postDelayed(this, pagerDelayInMilliseconds);
-                    Log.i(LOG_TAG, "Current position: " + currentTweetPosition + "\t PagerItem position: " + pagerAutoScrollPosition);
                 } else {
                     handler.removeCallbacks(this);
-                    Log.i(LOG_TAG, "Pager Runnable terminated!");
+                    Timber.i("Pager Runnable terminated!");
                 }
             }
         };
@@ -268,21 +274,13 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SEARCH_QUERIES) {
             if(resultCode == Activity.RESULT_OK) {
                 presenter.searchNewQuery(data.getStringExtra(EXTRA_SEARCH_QUERY));
             }
         }
-    }
-
-    @Override
-    protected void injectDependencies(AppComponent appComponent) {
-        HomeComponent homeComponent = DaggerHomeComponent.builder()
-                .appComponent(appComponent)
-                .build();
-        homeComponent.inject(this);
     }
 
     private void setupTweetsPagination(boolean isPaginationAlreadySet) {
@@ -303,13 +301,11 @@ public class MainActivity extends BaseActivity implements
 
         @Override
         public boolean isLoading() {
-            // Indicate whether new page loading is in progress or not
             return presenter.isLoadingInProgress();
         }
 
         @Override
         public boolean hasLoadedAllItems() {
-            // Indicate whether all data (pages) are loaded or not
             return presenter.hasLoadedAllItems();
         }
     };

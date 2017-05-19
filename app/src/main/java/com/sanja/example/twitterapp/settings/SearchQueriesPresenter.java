@@ -1,8 +1,8 @@
 package com.sanja.example.twitterapp.settings;
 
-import android.widget.EditText;
-
 import com.sanja.example.twitterapp.app.AbstractPresenter;
+
+import java.util.List;
 
 public class SearchQueriesPresenter extends AbstractPresenter<SearchQueriesMVP.View> implements
         SearchQueriesMVP.Presenter {
@@ -24,39 +24,40 @@ public class SearchQueriesPresenter extends AbstractPresenter<SearchQueriesMVP.V
     }
 
     @Override
-    public void onDeleteClicked(int position) {
-        sqManager.removeSearchQuery(position);
-        view().showSearchQueries(sqManager.getSearchQueries());
+    public void onDeleteClicked(SearchQuery searchQuery) {
+        view().removeItem(searchQuery);
     }
 
     @Override
-    public void onSearchQueryItemClicked(int itemPosition) {
-        view().openOptionsDialogBox(itemPosition);
+    public void onSearchQueryItemClicked(SearchQuery searchQuery) {
+        view().openOptionsDialogBox(searchQuery);
     }
 
     @Override
-    public void onUseClicked(int itemPosition) {
-        view().searchNewQuery(sqManager.getSearchQuery(itemPosition));
+    public void onUseClicked(SearchQuery searchQuery) {
+        view().searchNewQuery(searchQuery);
     }
 
     @Override
     public void onSearchQuerySaved(String searchName, String searchQuery) {
         SearchQuery newQuery = new SearchQuery(searchName, searchQuery);
-        sqManager.addSearchQuery(newQuery);
         view().addSearchQueryToAdapter(newQuery);
     }
 
     @Override
-    public void onEditClicked(int itemPosition) {
-        String searchName = sqManager.getSearchQuery(itemPosition).getSearchName();
-        String searchQuery = sqManager.getSearchQuery(itemPosition).getSearchQuery();
-        view().openEditDialog(searchName, searchQuery, itemPosition);
+    public void onEditClicked(SearchQuery sq) {
+        view().openEditDialog(sq);
     }
 
     @Override
-    public void onSearchQueryEdited(String searchName, String searchQuery, int itemPosition) {
-        SearchQuery sq = sqManager.getSearchQuery(itemPosition);
-        sq.setSearchName(searchName);
-        sq.setSearchQuery(searchQuery);
+    public void onSearchQueryEdited(String name, String query, SearchQuery searchQuery) {
+        searchQuery.setSearchName(name);
+        searchQuery.setSearchQuery(query);
+        view().refreshSearchQueries();
+    }
+
+    @Override
+    public void onViewDestroyed(List<SearchQuery> searchQueries) {
+        sqManager.setSearchQueries(searchQueries);
     }
 }

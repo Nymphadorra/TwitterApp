@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SearchQueriesManager {
 
-    private final List<SearchQuery> searchQueries;
+    private List<SearchQuery> searchQueries;
     private final SearchQueriesPreferences sqPreferences;
 
     public SearchQueriesManager(SearchQueriesPreferences sqPreferences) {
@@ -21,17 +21,8 @@ public class SearchQueriesManager {
         return searchQueries;
     }
 
-    public SearchQuery getSearchQuery(int itemPosition) {
-        return searchQueries.get(itemPosition);
-    }
-
-    public void addSearchQuery(SearchQuery sq) {
-        searchQueries.add(sq);
-        saveToPreferences();
-    }
-
-    public void removeSearchQuery(int position) {
-        searchQueries.remove(position);
+    public void setSearchQueries(List<SearchQuery> searchQueries) {
+        this.searchQueries = searchQueries;
         saveToPreferences();
     }
 
