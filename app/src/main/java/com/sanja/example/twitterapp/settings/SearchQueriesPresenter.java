@@ -24,11 +24,6 @@ public class SearchQueriesPresenter extends AbstractPresenter<SearchQueriesMVP.V
     }
 
     @Override
-    public void onDeleteClicked(SearchQuery searchQuery) {
-        view().removeItem(searchQuery);
-    }
-
-    @Override
     public void onSearchQueryItemClicked(SearchQuery searchQuery) {
         view().openOptionsDialogBox(searchQuery);
     }
@@ -36,17 +31,23 @@ public class SearchQueriesPresenter extends AbstractPresenter<SearchQueriesMVP.V
     @Override
     public void onUseClicked(SearchQuery searchQuery) {
         view().searchNewQuery(searchQuery);
+        searchQuery.markAsSelected();
+    }
+
+    @Override
+    public void onEditClicked(SearchQuery sq) {
+        view().openEditDialog(sq);
+    }
+
+    @Override
+    public void onDeleteClicked(SearchQuery searchQuery) {
+        view().removeItem(searchQuery);
     }
 
     @Override
     public void onSearchQuerySaved(String searchName, String searchQuery) {
         SearchQuery newQuery = new SearchQuery(searchName, searchQuery);
         view().addSearchQueryToAdapter(newQuery);
-    }
-
-    @Override
-    public void onEditClicked(SearchQuery sq) {
-        view().openEditDialog(sq);
     }
 
     @Override

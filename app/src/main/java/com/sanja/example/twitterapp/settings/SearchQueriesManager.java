@@ -7,18 +7,25 @@ public class SearchQueriesManager {
 
     private List<SearchQuery> searchQueries;
     private final SearchQueriesPreferences sqPreferences;
+    private SearchQuery selectedSQ;
 
     public SearchQueriesManager(SearchQueriesPreferences sqPreferences) {
         this.sqPreferences = sqPreferences;
         searchQueries = sqPreferences.get();
         if (searchQueries.isEmpty()) {
-            searchQueries.add(new SearchQuery("Android", "Android"));
+            SearchQuery sq = new SearchQuery("Android", "Android");
+            searchQueries.add(sq);
+            sq.markAsSelected();
             saveToPreferences();
         }
     }
 
     public List<SearchQuery> getSearchQueries() {
         return searchQueries;
+    }
+
+    public SearchQuery getFirstSearchQuery() {
+        return searchQueries.get(0);
     }
 
     public void setSearchQueries(List<SearchQuery> searchQueries) {

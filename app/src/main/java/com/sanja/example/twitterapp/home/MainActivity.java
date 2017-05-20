@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ViewAnimator;
 
 import com.paginate.Paginate;
@@ -25,12 +26,14 @@ import com.sanja.example.twitterapp.app.ui.ViewAnimatorById;
 import com.sanja.example.twitterapp.app.utils.PageSelectedListener;
 import com.sanja.example.twitterapp.di.components.AppComponent;
 import com.sanja.example.twitterapp.settings.SearchQueriesActivity;
+import com.sanja.example.twitterapp.settings.SearchQuery;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,7 +57,6 @@ public class MainActivity extends BaseActivity implements
     @BindView(R.id.view_animator) ViewAnimatorById viewAnimator;
     @BindView(R.id.vp_tweets) ViewPager viewPager;
     @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeRefreshLayout;
-
     @BindString(R.string.error_network) String errorNetworkMessage;
 
     private boolean listDisplayed = true;

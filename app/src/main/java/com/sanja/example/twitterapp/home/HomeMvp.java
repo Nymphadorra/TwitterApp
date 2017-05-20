@@ -2,6 +2,7 @@ package com.sanja.example.twitterapp.home;
 
 import com.sanja.example.twitterapp.app.BasePresenter;
 import com.sanja.example.twitterapp.Tweet;
+import com.sanja.example.twitterapp.settings.SearchQuery;
 
 import java.util.List;
 

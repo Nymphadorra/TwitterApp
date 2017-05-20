@@ -30,6 +30,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+import static com.sanja.example.twitterapp.R.string.searchQuery;
+
 public class SearchQueriesActivity extends BaseActivity implements
         SearchQueriesMVP.View,
         ItemClickListener,
@@ -110,6 +112,7 @@ public class SearchQueriesActivity extends BaseActivity implements
                         switch (which) {
                             case 0:
                                 presenter.onUseClicked(searchQuery);
+                                searchQueriesAdapter.setSelectedItemPosition(searchQuery);
                                 break;
                             case 1:
                                 presenter.onEditClicked(searchQuery);

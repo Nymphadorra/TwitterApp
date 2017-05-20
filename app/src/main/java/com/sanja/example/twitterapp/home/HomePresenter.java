@@ -5,6 +5,7 @@ import com.sanja.example.twitterapp.app.AbstractPresenter;
 import com.sanja.example.twitterapp.SearchResponse;
 import com.sanja.example.twitterapp.Tweet;
 import com.sanja.example.twitterapp.settings.SearchQueriesManager;
+import com.sanja.example.twitterapp.settings.SearchQuery;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     private final APIService apiService;
     private final SearchQueriesManager sqManager;
-    private  String searchQuery = "Elon Musk";
+    private String searchQuery;
     private String nextResults;
     private boolean isLoadingInProgress = false;
     private boolean hasLoadedAllItems = false;
@@ -33,12 +34,18 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     @Override
     protected void onBind() {
-        search(sqManager.getSearchQueries().get(0).getSearchQuery());
+        SearchQuery sq = sqManager.getFirstSearchQuery();
+        searchNewQuery(sq.getSearchQuery());
+        sq.markAsSelected();
+        List<SearchQuery> searchQueries = sqManager.getSearchQueries();
+        for (int i = 1; i < searchQueries.size(); i++){
+            searchQueries.get(i).unmarkAsSelected();
+        }
     }
 
     @Override
     public void onListAutoScrollClicked() {
-       view().startListAutoScroll(LIST_AUTO_SCROLL_DELAY);
+        view().startListAutoScroll(LIST_AUTO_SCROLL_DELAY);
     }
 
     @Override
@@ -142,7 +149,7 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     private void handleSearchSuccess(List<Tweet> tweets) {
         view().showTweets(tweets);
-        if(currentLayout == Layout.LIST) {
+        if (currentLayout == Layout.LIST) {
             view().showListLayout();
         } else {
             view().showPagerLayout();

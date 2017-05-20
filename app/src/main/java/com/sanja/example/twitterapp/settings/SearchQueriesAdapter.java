@@ -1,9 +1,14 @@
 package com.sanja.example.twitterapp.settings;
 
+import android.graphics.Color;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sanja.example.twitterapp.ItemClickListener;
@@ -24,6 +29,7 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
     private List<SearchQuery> searchQueries;
     private final OnStartDragListener onStartDragListener;
     private final ItemClickListener itemClickListener;
+    private int selectedItemPosition;
 
 
     public SearchQueriesAdapter(OnStartDragListener onStartDragListener, ItemClickListener itemClickListener) {
@@ -41,7 +47,15 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
 
     @Override
     public void onBindViewHolder(SearchQueriesViewHolder holder, int position) {
-        holder.searchQuery.setText(searchQueries.get(position).getSearchName());
+        SearchQuery sq = searchQueries.get(position);
+        holder.searchQuery.setText(sq.getSearchName());
+        int color = Color.parseColor("navy");
+        if (sq.isSelected()) {
+            int colorWithAlpha = ColorUtils.setAlphaComponent(color, 70);
+            holder.llRoot.setBackgroundColor(colorWithAlpha);
+        } else {
+            holder.llRoot.setBackgroundColor(Color.parseColor("white"));
+        }
     }
 
     @Override
@@ -94,9 +108,29 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
         return searchQueries;
     }
 
+    public int setSelectedItemPosition(SearchQuery sq) {
+        refreshList(sq);
+        return searchQueries.indexOf(sq);
+    }
+
+    public void setSelectedItemPosition(int position) {
+        selectedItemPosition = position;
+    }
+
+    private void refreshList(SearchQuery sq) {
+        for (int i = 0; i < searchQueries.size(); i++){
+            if(searchQueries.get(i) != sq){
+                searchQueries.get(i).unmarkAsSelected();
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     class SearchQueriesViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.ll_root) FrameLayout llRoot;
         @BindView(R.id.tv_search_query) TextView searchQuery;
+        @BindView(R.id.iv_selected) ImageView ivSelected;
 
         public SearchQueriesViewHolder(View itemView) {
             super(itemView);

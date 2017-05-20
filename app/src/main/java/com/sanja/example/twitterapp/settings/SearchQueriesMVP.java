@@ -15,9 +15,9 @@ public interface SearchQueriesMVP {
 
         void openSaveDialogBox();
 
-        void searchNewQuery(SearchQuery sq);
-
         void openEditDialog(SearchQuery searchQuery);
+
+        void searchNewQuery(SearchQuery sq);
 
         void removeItem(SearchQuery searchQuery);
 
@@ -27,15 +27,15 @@ public interface SearchQueriesMVP {
     interface Presenter extends BasePresenter<View> {
         void onAddSearchQueryClicked();
 
-        void onDeleteClicked(SearchQuery searchQuery);
-
         void onSearchQueryItemClicked(SearchQuery searchQuery);
 
         void onUseClicked(SearchQuery searchQuery);
 
-        void onSearchQuerySaved(String searchName, String searchQuery);
-
         void onEditClicked(SearchQuery searchQuery);
+
+        void onDeleteClicked(SearchQuery searchQuery);
+
+        void onSearchQuerySaved(String searchName, String searchQuery);
 
         void onSearchQueryEdited(String name, String query, SearchQuery searchQuery);
 
