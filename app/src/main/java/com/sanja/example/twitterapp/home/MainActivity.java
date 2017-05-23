@@ -9,31 +9,26 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.ViewAnimator;
 
 import com.paginate.Paginate;
 import com.sanja.example.twitterapp.app.BaseActivity;
-import com.sanja.example.twitterapp.ItemClickListener;
+import com.sanja.example.twitterapp.app.ItemClickListener;
 import com.sanja.example.twitterapp.R;
-import com.sanja.example.twitterapp.Tweet;
 import com.sanja.example.twitterapp.app.ui.ViewAnimatorById;
 import com.sanja.example.twitterapp.app.utils.PageSelectedListener;
 import com.sanja.example.twitterapp.di.components.AppComponent;
-import com.sanja.example.twitterapp.settings.SearchQueriesActivity;
-import com.sanja.example.twitterapp.settings.SearchQuery;
+import com.sanja.example.twitterapp.queries.SearchQueriesActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +40,7 @@ public class MainActivity extends BaseActivity implements
         ItemClickListener,
         SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String LOG_TAG = "Main Activity";
+    private static final int PAGER_PAGE_MARGIN = 20;
     private static final String EXTRA_SEARCH_QUERY = "search_query";
     private static final int RC_SEARCH_QUERIES = 0;
 
@@ -76,7 +71,7 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        setupToolbar(toolbar);
+        setupToolbar(toolbar, R.string.toolbar_title_main, false);
         setViewAnimatorAnimations(this, viewAnimator);
 
         rvTweets.setLayoutManager(new LinearLayoutManagerWithSmoothScroller(this));
@@ -85,7 +80,7 @@ public class MainActivity extends BaseActivity implements
 
         tweetsPagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(tweetsPagerAdapter);
-        viewPager.setPageMargin(20);
+        viewPager.setPageMargin(PAGER_PAGE_MARGIN);
         viewPager.addOnPageChangeListener(new PageSelectedListener() {
             @Override
             public void onPageSelected(int position) {
@@ -97,6 +92,7 @@ public class MainActivity extends BaseActivity implements
             }
         });
         swipeRefreshLayout.setOnRefreshListener(this);
+        handler = new Handler();
         presenter.bind(this);
     }
 
@@ -110,7 +106,6 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onItemClicked(int itemPosition) {
-        // Open gallery and Tweet info.
     }
 
     @Override
@@ -124,7 +119,6 @@ public class MainActivity extends BaseActivity implements
         tweetsRecyclerAdapter.refreshTweets(tweets);
         tweetsPagerAdapter.refreshTweets(tweets);
         setupTweetsPagination(isPaginationAlreadySet);
-        handler = new Handler(); // Todo: put this maybe in onCreate?
     }
 
     @Override

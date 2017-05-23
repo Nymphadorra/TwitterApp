@@ -1,8 +1,6 @@
-package com.sanja.example.twitterapp.settings;
+package com.sanja.example.twitterapp.queries;
 
 import android.graphics.Color;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sanja.example.twitterapp.ItemClickListener;
+import com.sanja.example.twitterapp.app.ItemClickListener;
 import com.sanja.example.twitterapp.R;
 
 import java.util.ArrayList;
@@ -29,8 +27,6 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
     private List<SearchQuery> searchQueries;
     private final OnStartDragListener onStartDragListener;
     private final ItemClickListener itemClickListener;
-    private int selectedItemPosition;
-
 
     public SearchQueriesAdapter(OnStartDragListener onStartDragListener, ItemClickListener itemClickListener) {
         this.searchQueries = new ArrayList<>();
@@ -49,12 +45,8 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
     public void onBindViewHolder(SearchQueriesViewHolder holder, int position) {
         SearchQuery sq = searchQueries.get(position);
         holder.searchQuery.setText(sq.getSearchName());
-        int color = Color.parseColor("navy");
-        if (sq.isSelected()) {
-            int colorWithAlpha = ColorUtils.setAlphaComponent(color, 70);
-            holder.llRoot.setBackgroundColor(colorWithAlpha);
-        } else {
-            holder.llRoot.setBackgroundColor(Color.parseColor("white"));
+        if (!sq.isSelected()) {
+            holder.llRoot.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
@@ -111,10 +103,6 @@ public class SearchQueriesAdapter extends RecyclerView.Adapter<SearchQueriesAdap
     public int setSelectedItemPosition(SearchQuery sq) {
         refreshList(sq);
         return searchQueries.indexOf(sq);
-    }
-
-    public void setSelectedItemPosition(int position) {
-        selectedItemPosition = position;
     }
 
     private void refreshList(SearchQuery sq) {

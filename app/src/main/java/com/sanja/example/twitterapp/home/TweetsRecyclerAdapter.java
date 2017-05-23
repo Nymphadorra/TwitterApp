@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sanja.example.twitterapp.ItemClickListener;
+import com.sanja.example.twitterapp.app.ItemClickListener;
 import com.sanja.example.twitterapp.R;
-import com.sanja.example.twitterapp.Tweet;
 import com.sanja.example.twitterapp.app.Utils;
 import com.squareup.picasso.Picasso;
 

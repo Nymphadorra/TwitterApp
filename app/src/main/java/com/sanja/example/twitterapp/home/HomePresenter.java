@@ -2,10 +2,8 @@ package com.sanja.example.twitterapp.home;
 
 import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.app.AbstractPresenter;
-import com.sanja.example.twitterapp.SearchResponse;
-import com.sanja.example.twitterapp.Tweet;
-import com.sanja.example.twitterapp.settings.SearchQueriesManager;
-import com.sanja.example.twitterapp.settings.SearchQuery;
+import com.sanja.example.twitterapp.queries.SearchQueriesManager;
+import com.sanja.example.twitterapp.queries.SearchQuery;
 
 import java.util.List;
 
@@ -34,13 +32,9 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     @Override
     protected void onBind() {
-        SearchQuery sq = sqManager.getFirstSearchQuery();
-        searchNewQuery(sq.getSearchQuery());
-        sq.markAsSelected();
-        List<SearchQuery> searchQueries = sqManager.getSearchQueries();
-        for (int i = 1; i < searchQueries.size(); i++){
-            searchQueries.get(i).unmarkAsSelected();
-        }
+        SearchQuery selectedSQ = sqManager.getFirstSelectedSQ();
+        searchNewQuery(selectedSQ.getSearchQuery());
+        unmarkUnselected(sqManager.getSearchQueries(), selectedSQ);
     }
 
     @Override
@@ -163,5 +157,13 @@ public class HomePresenter extends AbstractPresenter<HomeMvp.View> implements Ho
 
     private void setNextResults(String nextResults) {
         this.nextResults = "search/tweets.json" + nextResults;
+    }
+
+    private void unmarkUnselected(List<SearchQuery> searchQueries, SearchQuery selectedSQ){
+        for (int i = 1; i < searchQueries.size(); i++){
+            if(!searchQueries.get(i).equals(selectedSQ)){
+                searchQueries.get(i).unmarkAsSelected();
+            }
+        }
     }
 }

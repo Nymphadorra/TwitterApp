@@ -1,6 +1,6 @@
 package com.sanja.example.twitterapp.app.api;
 
-import com.sanja.example.twitterapp.SearchResponse;
+import com.sanja.example.twitterapp.home.SearchResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

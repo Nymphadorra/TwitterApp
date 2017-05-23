@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp.settings;
+package com.sanja.example.twitterapp.queries;
 
 import com.sanja.example.twitterapp.app.BasePresenter;
 
@@ -22,6 +22,8 @@ public interface SearchQueriesMVP {
         void removeItem(SearchQuery searchQuery);
 
         void refreshSearchQueries();
+
+        void close();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -40,5 +42,7 @@ public interface SearchQueriesMVP {
         void onSearchQueryEdited(String name, String query, SearchQuery searchQuery);
 
         void onViewDestroyed(List<SearchQuery> searchQueries);
+
+        void onBackPressed();
     }
 }

@@ -1,6 +1,6 @@
 package com.sanja.example.twitterapp.app.api;
 
-import com.sanja.example.twitterapp.TokenManager;
+import com.sanja.example.twitterapp.app.token.TokenManager;
 
 import java.io.IOException;
 

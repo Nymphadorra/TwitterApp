@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp.settings;
+package com.sanja.example.twitterapp.queries;
 
 import com.sanja.example.twitterapp.app.AbstractPresenter;
 
@@ -60,5 +60,10 @@ public class SearchQueriesPresenter extends AbstractPresenter<SearchQueriesMVP.V
     @Override
     public void onViewDestroyed(List<SearchQuery> searchQueries) {
         sqManager.setSearchQueries(searchQueries);
+    }
+
+    @Override
+    public void onBackPressed() {
+        view().close();
     }
 }

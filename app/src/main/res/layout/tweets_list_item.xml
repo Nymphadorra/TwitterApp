@@ -36,12 +36,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/iv_profile"
+                android:textStyle="bold"
                 tools:text="User Name"/>
 
             <TextView
                 android:id="@+id/tv_user_screen_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="italic"
                 android:layout_below="@+id/tv_user_name"
                 android:layout_toRightOf="@+id/iv_profile"
                 tools:text="User Screen Name"/>
@@ -52,12 +54,18 @@
             android:id="@+id/tv_tweet_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/tweetContentText"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             tools:text="Tweet content"/>
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="13sp"
             tools:text="January, 1, 2017"/>
 
         <LinearLayout

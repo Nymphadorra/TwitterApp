@@ -11,8 +11,6 @@
     card_view:cardElevation="3dp">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/ll_fragment_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,9 +34,9 @@
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:layout_toRightOf="@+id/iv_profile"
-
-                android:textSize="25sp"
+                android:textSize="23sp"
                 tools:text="User Name"/>
 
             <TextView
@@ -46,8 +44,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_user_name"
+                android:textStyle="italic"
                 android:layout_toRightOf="@+id/iv_profile"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 tools:text="User Screen Name"/>
         </RelativeLayout>
 
@@ -65,10 +64,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:textAlignment="center"
             android:gravity="top"
+            android:textStyle="bold"
+            android:textColor="@color/tweetContentText"
             android:padding="4dp"
-            android:textSize="25sp"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:textSize="23sp"
             tools:text="Tweet content with much text that should be shown decently across the screen"/>
 
         <LinearLayout

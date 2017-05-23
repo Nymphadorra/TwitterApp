@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp.settings;
+package com.sanja.example.twitterapp.queries;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,11 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.sanja.example.twitterapp.ItemClickListener;
+import com.sanja.example.twitterapp.app.ItemClickListener;
 import com.sanja.example.twitterapp.R;
 import com.sanja.example.twitterapp.app.BaseActivity;
 import com.sanja.example.twitterapp.di.components.AppComponent;
@@ -29,8 +30,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
-
-import static com.sanja.example.twitterapp.R.string.searchQuery;
 
 public class SearchQueriesActivity extends BaseActivity implements
         SearchQueriesMVP.View,
@@ -46,6 +45,8 @@ public class SearchQueriesActivity extends BaseActivity implements
     @BindString(R.string.error_network) String errorNetworkMessage;
     @BindString(R.string.dialog_save_title) String saveDialogTitle;
     @BindString(R.string.dialog_edit_title) String editDialogTitle;
+    @BindString(R.string.empty_string) String emptyString;
+    @BindString(R.string.toast_saved) String saved;
 
     private SearchQueriesAdapter searchQueriesAdapter;
     private ItemTouchHelper itemTouchHelper;
@@ -56,7 +57,7 @@ public class SearchQueriesActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_queries);
         ButterKnife.bind(this);
-        setupToolbar(toolbar);
+        setupToolbar(toolbar, R.string.toolbar_title_search_queries, true);
 
         rvSearchQueries.setLayoutManager(new LinearLayoutManager(this));
         searchQueriesAdapter = new SearchQueriesAdapter(this, this);
@@ -81,6 +82,17 @@ public class SearchQueriesActivity extends BaseActivity implements
                 .appComponent(appComponent)
                 .build();
         settingsComponent.inject(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                presenter.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -135,9 +147,13 @@ public class SearchQueriesActivity extends BaseActivity implements
             public void onClick(DialogInterface dialog, int which) {
                 String searchName = etSearchName.getText().toString().trim();
                 String searchQuery = etSearchQuery.getText().toString().trim();
-                presenter.onSearchQuerySaved(searchName, searchQuery);
-                showToast("Saved");
-                Timber.i("Saved new search query %s with name %s", searchQuery, searchName);
+                if(!searchName.isEmpty() && !searchQuery.isEmpty()) {
+                    presenter.onSearchQuerySaved(searchName, searchQuery);
+                    showToast(saved);
+                    Timber.i("Saved new search query %s with name %s", searchQuery, searchName);
+                } else if(searchName.isEmpty() || searchQuery.isEmpty()) {
+                    showToast(emptyString);
+                }
             }
         });
         builder.create().show();
@@ -165,7 +181,7 @@ public class SearchQueriesActivity extends BaseActivity implements
                 String searchQuery = etSearchQuery.getText().toString().trim();
                 presenter.onSearchQueryEdited(searchName, searchQuery, sq);
                 searchQueriesAdapter.notifyDataSetChanged();
-                showToast("Saved");
+                showToast(saved);
                 Timber.i("Saved new search query %s with name %s", searchQuery, searchName);
             }
         });
@@ -180,6 +196,11 @@ public class SearchQueriesActivity extends BaseActivity implements
     @Override
     public void refreshSearchQueries() {
         searchQueriesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void close() {
+        finish();
     }
 
     @OnClick(R.id.fab_add_search_query)

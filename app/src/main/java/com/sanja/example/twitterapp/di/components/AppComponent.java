@@ -1,6 +1,6 @@
 package com.sanja.example.twitterapp.di.components;
 
-import com.sanja.example.twitterapp.settings.SearchQueriesManager;
+import com.sanja.example.twitterapp.queries.SearchQueriesManager;
 import com.sanja.example.twitterapp.app.api.APIService;
 import com.sanja.example.twitterapp.app.api.APIServiceAuth;
 import com.sanja.example.twitterapp.di.AppScope;

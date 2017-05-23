@@ -1,10 +1,9 @@
-package com.sanja.example.twitterapp.settings;
+package com.sanja.example.twitterapp.queries;
 
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sanja.example.twitterapp.settings.SearchQuery;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

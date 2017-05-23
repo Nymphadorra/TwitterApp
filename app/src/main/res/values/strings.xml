@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">TwitterApp</string>
 
+    <!-- Toolbar titles -->
+    <string name="toolbar_title_main">Tweets Feed</string>
+    <string name="toolbar_title_search_queries">Your Search Queries</string>
+
+
     <!-- Menu item titles -->
     <string name="menu_item_title_auto_scroll">Auto scroll</string>
     <string name="menu_item_title_list_layout">List layout</string>
@@ -14,9 +19,10 @@
     <string name="error_tweet_date">Unknown date</string>
     <string name="error_network">Something went wrong. Please try again.</string>
     <string name="empty_response">Nothing to display.</string>
+    <string name="empty_string">Please provide both name and query.</string>
 
     <!-- Dialog box options -->
-    <string name="dialog_options_title">Pick an option</string>
+    <string name="dialog_options_title">Settings</string>
     <string name="use">Use</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
@@ -25,6 +31,7 @@
     <string name="dialog_save_title">Create new Query</string>
     <string name="save_item">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="toast_saved">Saved</string>
 
     <!-- Dialog box editTexts -->
     <string name="searchName">Search name</string>

@@ -4,10 +4,12 @@
     <color name="colorPrimary">#452b26</color>
     <color name="colorPrimaryDark">#2b1b18</color>
     <color name="colorAccent">#40e2ff</color>
+    <color name="colorToolbarTitle">#aaedf9</color>
     <color name="colorNetworkErrorBackground">#643c3c</color>
-    <color name="cardViewBackground">#dcbaba</color>
+    <color name="cardViewBackground">#eacfcf</color>
     <color name="autoScrollOff">#686666</color>
     <color name="colorDivider">#b7b4b4</color>
     <color name="searchQueryBackground">#d3f4f7</color>
+    <color name="tweetContentText">#736767</color>
 
 </resources>

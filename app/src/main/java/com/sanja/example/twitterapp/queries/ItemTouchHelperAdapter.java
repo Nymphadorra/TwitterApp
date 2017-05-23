@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp.settings;
+package com.sanja.example.twitterapp.queries;
 
 public interface ItemTouchHelperAdapter {
 

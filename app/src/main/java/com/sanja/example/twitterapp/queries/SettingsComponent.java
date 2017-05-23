@@ -1,4 +1,4 @@
-package com.sanja.example.twitterapp.settings;
+package com.sanja.example.twitterapp.queries;
 
 import com.sanja.example.twitterapp.di.ActivityScope;
 import com.sanja.example.twitterapp.di.components.AppComponent;
